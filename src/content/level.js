@@ -63,3 +63,24 @@ export function applyDailyXp(profile, gained, todayIso) {
     capped: actualGain < gained,
   }
 }
+
+// Même problème que l'XP, mais côté pièces : sans plafond, la machine à sous (pièces à chaque
+// bonne réponse) et l'ouverture de coffres (gagnés à l'infini en rejouant le quiz) permettent de
+// tout acheter en quelques jours. La roue quotidienne et le Défi du jour ne passent PAS par ce
+// plafond : ils sont déjà bornés à 1 fois/jour par construction, pas besoin d'un 2e frein.
+export const DAILY_COINS_CAP = 300
+
+export function applyDailyCoins(profile, gained, todayIso) {
+  const sameDay = profile.coins_today_date === todayIso
+  const coinsToday = sameDay ? profile.coins_today : 0
+  const allowed = Math.max(0, DAILY_COINS_CAP - coinsToday)
+  const actualGain = Math.min(gained, allowed)
+
+  return {
+    coins: profile.coins + actualGain,
+    coinsToday: coinsToday + actualGain,
+    coinsTodayDate: todayIso,
+    gained: actualGain,
+    capped: actualGain < gained,
+  }
+}

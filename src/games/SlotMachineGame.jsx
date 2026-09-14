@@ -22,6 +22,7 @@ export default function SlotMachineGame({ language, variant, level, onCoinsEarne
   const [phase, setPhase] = useState('idle') // 'idle' | 'spinning' | 'result'
   const [reelSymbol, setReelSymbol] = useState('🍒')
   const [resultTier, setResultTier] = useState(null)
+  const [capInfo, setCapInfo] = useState(null) // {gained, capped}, résultat de applyDailyCoins
   const [sessionCoins, setSessionCoins] = useState(0)
   const intervalRef = useRef(null)
 
@@ -54,6 +55,7 @@ export default function SlotMachineGame({ language, variant, level, onCoinsEarne
     setSelected(null)
     setPhase('idle')
     setResultTier(null)
+    setCapInfo(null)
   }
 
   function choose(option) {
@@ -77,8 +79,10 @@ export default function SlotMachineGame({ language, variant, level, onCoinsEarne
         setReelSymbol(tier.emoji)
         setResultTier(tier)
         setPhase('result')
-        setSessionCoins((c) => c + tier.coins)
-        onCoinsEarned(tier.coins)
+        onCoinsEarned(tier.coins).then((res) => {
+          setSessionCoins((c) => c + res.gained)
+          setCapInfo(res)
+        })
       }
     }, SPIN_TICK_MS)
   }
@@ -120,7 +124,15 @@ export default function SlotMachineGame({ language, variant, level, onCoinsEarne
             </div>
             {phase === 'result' && (
               <>
-                <p className="tier-label">{resultTier.label} — +{resultTier.coins} pièces</p>
+                <p className="tier-label">
+                  {resultTier.label}
+                  {!capInfo && ` — +${resultTier.coins} pièces`}
+                  {capInfo && !capInfo.capped && ` — +${resultTier.coins} pièces`}
+                  {capInfo && capInfo.capped && capInfo.gained > 0 && ` — +${capInfo.gained} pièces (plafond quotidien presque atteint)`}
+                </p>
+                {capInfo?.capped && capInfo.gained === 0 && (
+                  <p className="muted">Plafond de pièces atteint pour aujourd’hui — reviens demain !</p>
+                )}
                 <button onClick={nextRound}>Continuer</button>
               </>
             )}

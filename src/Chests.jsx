@@ -6,6 +6,7 @@ const OPEN_DURATION_MS = 900
 export default function Chests({ count, onOpen, onExit }) {
   const [phase, setPhase] = useState('idle') // 'idle' | 'opening' | 'result'
   const [tier, setTier] = useState(null)
+  const [capInfo, setCapInfo] = useState(null) // {gained, capped}, résultat de applyDailyCoins
 
   function open() {
     if (count <= 0 || phase !== 'idle') return
@@ -14,13 +15,14 @@ export default function Chests({ count, onOpen, onExit }) {
       const result = drawTier()
       setTier(result)
       setPhase('result')
-      onOpen(result.coins)
+      onOpen(result.coins).then(setCapInfo)
     }, OPEN_DURATION_MS)
   }
 
   function again() {
     setPhase('idle')
     setTier(null)
+    setCapInfo(null)
   }
 
   return (
@@ -35,7 +37,14 @@ export default function Chests({ count, onOpen, onExit }) {
 
         {phase === 'result' && (
           <>
-            <p className="tier-label">{tier.label} — +{tier.coins} pièces</p>
+            <p className="tier-label">
+              {tier.label}
+              {(!capInfo || !capInfo.capped) && ` — +${tier.coins} pièces`}
+              {capInfo?.capped && capInfo.gained > 0 && ` — +${capInfo.gained} pièces (plafond quotidien presque atteint)`}
+            </p>
+            {capInfo?.capped && capInfo.gained === 0 && (
+              <p className="muted">Plafond de pièces atteint pour aujourd’hui — reviens demain !</p>
+            )}
             {count > 0 && <button onClick={again}>Ouvrir un autre coffre</button>}
           </>
         )}

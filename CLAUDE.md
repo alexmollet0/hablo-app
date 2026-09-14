@@ -76,8 +76,8 @@ deviennent orphelins sans casser l'app. **Coût réel total (looks + maisons + a
 regénération de 4 looks)** : quelques euros.
 
 **Ordre de priorité fixé par l'utilisateur** : (1) plus de looks (pas urgent) (2) ✅ maisons +
-animaux (3) ✅ contenu pédagogique + système de niveaux (4) plus de jeux pour gagner des pièces
-(au-delà de la machine à sous) — **seul point (4) pas commencé**.
+animaux (3) ✅ contenu pédagogique + système de niveaux (4) ✅ plus de jeux pour gagner des pièces
++ équilibrage de l'économie (roue, coffres, Défi du jour, plafond de pièces — voir ci-dessous).
 
 **Système de niveaux XP (2026-09-14)** : `profile.level` était figé une fois pour toutes par le
 test de placement — transformé en vraie progression continue. Le test de placement fixe
@@ -91,20 +91,46 @@ bandeau de félicitations au level-up (état local `levelUpNotice` dans `MainApp
 colonne `xp` sur `profiles` — **migration à exécuter sur le vrai projet Supabase avant de
 tester** (`alter table profiles add column if not exists xp int not null default 0;`).
 
-**Contenu élargi (2026-09-14)** : vocabulaire par langue passé de 48 à **129 mots** (~14-15 par
-niveau au lieu de 5-6), vérifié programmatiquement (ids uniques, `level`/`topic`/`fr` alignés
-entre `vocabEs.js`/`vocabEn.js` pour chaque concept — script de vérif non conservé, à refaire si
-le contenu est encore élargi). Tests de placement relus, jugés déjà clairs, non modifiés.
+**Contenu élargi (2026-09-14, x2)** : vocabulaire par langue passé de 48 → 129 → **356 mots**
+(~40 par niveau, 2 thèmes/niveau), vérifié programmatiquement à chaque fois (ids uniques,
+`level`/`topic`/`fr` alignés entre `vocabEs.js`/`vocabEn.js`, script de vérif ad hoc dans
+`scripts/`, jamais commité — à refaire si le contenu est encore élargi). Motivé par un retour
+utilisateur direct : « j'ai jamais eu faux à aucun mot, c'est trop facile et répétitif ». Tests
+de placement relus, jugés déjà clairs, non modifiés.
 
-**Pas encore fait** : Stripe, plus de jeux pour gagner des pièces. Compte de test à nettoyer plus
-tard dans Supabase (Authentication > Users) : `hablo.realtest.sept@gmail.com`.
+**Roue/coffres/Défi du jour — équilibrage de l'économie (2026-09-14)** : après la roue+coffres
+livrés plus tôt dans la session, retour utilisateur : les pièces (contrairement à l'XP, déjà
+plafonné) n'avaient toujours aucun frein — la machine à sous (pièces à chaque bonne réponse) et
+l'ouverture de coffres (gagnés à l'infini en rejouant le quiz) étaient rejouables sans limite,
+rendant tout achetable en quelques jours. **`DAILY_COINS_CAP = 300`** (`src/content/level.js`,
+`applyDailyCoins`, même principe que `applyDailyXp`) appliqué UNIQUEMENT à ces deux sources
+(`SlotMachineGame`/`Chests` via `MainApp.addCoins`/`openChest`) — le tirage/l'animation reste
+normal une fois le plafond atteint, seul le gain réel de pièces s'arrête (message dédié affiché).
+La roue et le nouveau **Défi du jour** (`src/games/DailyChallenge.jsx`) restent HORS de ce
+plafond : déjà bornés à 1 fois/jour chacun par construction (`wheel_last_spin`/
+`challenge_last_play`). Défi du jour : 15 questions, récompense **basée sur le score réel**
+(`clamp(round(150 × score/15), 20, 150)`) plutôt qu'un montant fixe — répond directement à
+« vraiment récompenser la progression ». **Piège trouvé et corrigé pendant le test visuel** :
+la tentative du jour doit être consommée dès le DÉMARRAGE (pas la fin) sinon quitter en cours de
+partie permet de refarmer un bon score — mais la prop `alreadyPlayed` (dérivée du même
+`challenge_last_play` que `onStart()` vient d'écrire) revenait à `true` en plein milieu de la
+partie dès le rendu suivant, affichant "déjà joué" juste après avoir cliqué. Corrigé en capturant
+sa valeur une seule fois au montage (`useState(() => alreadyPlayed)`), jamais relue après.
+Roue quotidienne (`src/DailyWheel.jsx`) : table des lots désormais affichée (emoji/label/gain +
+% réel) et minuteur "prochain tour dans HH:MM:SS" (recalculé chaque seconde, repasse tout seul
+sur "Tourner la roue" à minuit sans recharger).
+
+**Pas encore fait** : Stripe. Compte de test à nettoyer plus tard dans Supabase
+(Authentication > Users) : `hablo.realtest.sept@gmail.com`.
 
 ## Fichiers clés
 - `src/supabaseClient.js` — client Supabase, `isSupabaseConfigured` (false si `.env.local` vide → écran "Configuration manquante" au lieu de planter).
 - `src/Auth.jsx` — `AuthGate` : mot de passe ou code à 6 chiffres par email. Pas de Google OAuth pour l'instant.
 - `src/content/language.js` — registre central des langues (`{ es: {...}, en: {...} }`, vocabulaire + questions de test + `hasVariant`) + `getWord(card, lang, variant)`. Point d'entrée à utiliser partout plutôt que d'importer un contenu de langue directement.
-- `src/content/vocabEs.js` / `vocabEn.js` — vocabulaire par langue (129 mots chacun, ~14-15 par niveau, mêmes `id`/`level`/`topic`/`fr` en parallèle). Espagnol a des vraies différences Espagne/LatAm (coche/carro, ordenador/computadora, móvil/celular, zumo/jugo, patata/papa, billete/boleto) ; anglais n'a pas de distinction UK/US pour l'instant.
-- `src/content/placementTestEs.js` / `placementTestEn.js` — 15 questions par langue, mêmes poids 1-9. `src/content/level.js` — `scorePlacementTest`/`levelTier` (test de placement) + `xpToNextLevel`/`applyXp`/`MAX_LEVEL` (système de niveaux XP), logique partagée indépendante de la langue.
+- `src/content/vocabEs.js` / `vocabEn.js` — vocabulaire par langue (356 mots chacun, ~40 par niveau sur 2 thèmes, mêmes `id`/`level`/`topic`/`fr` en parallèle). Espagnol a des vraies différences Espagne/LatAm (coche/carro, ordenador/computadora, móvil/celular, zumo/jugo, patata/papa, billete/boleto) ; anglais n'a pas de distinction UK/US pour l'instant.
+- `src/content/placementTestEs.js` / `placementTestEn.js` — 15 questions par langue, mêmes poids 1-9. `src/content/level.js` — `scorePlacementTest`/`levelTier` (test de placement) + `xpToNextLevel`/`applyXp`/`applyDailyXp`/`DAILY_XP_CAP` (niveaux XP, plafond quotidien) + `applyDailyCoins`/`DAILY_COINS_CAP` (même principe côté pièces, utilisé par la machine à sous et les coffres seulement — pas la roue ni le Défi du jour, déjà bornés à 1×/jour).
+- `src/content/rewardTiers.js` — tirage pondéré partagé (machine à sous + coffres). `src/DailyWheel.jsx` a sa PROPRE table `OUTCOMES` (distincte), désormais affichée (lots + %) avec un minuteur avant le prochain tour gratuit.
+- `src/games/DailyChallenge.jsx` — Défi du jour : 15 questions, 1 tentative/jour (`challenge_last_play`, consommée au démarrage via `onStart`, pas à la fin), récompense proportionnelle au score (20 à 150 pièces), hors `DAILY_COINS_CAP`.
 - `src/content/quizRounds.js` — construction de questions à choix multiple (mélange + distracteurs), factorisé et réutilisé par `QuizGame` et `SlotMachineGame`.
 - `src/leitner.js` — répétition espacée simplifiée (4 boîtes, intervalles 0/1/3/7 jours), volontairement plus simple qu'un SM-2 complet.
 - `src/Onboarding.jsx` + `src/PlacementTest.jsx` — étapes : choix de la langue → (variante si espagnol) → test de niveau → résultat. Écrit `target_language`/`variant`/`level`/`xp`/`onboarded` dans `profiles`.
@@ -116,7 +142,7 @@ tard dans Supabase (Authentication > Users) : `hablo.realtest.sept@gmail.com`.
 - `scripts/generate-images.mjs` — script ponctuel (jamais exécuté en prod) qui appelle l'API OpenAI (`gpt-image-1`) pour générer les 3 ensembles d'images (`SETS` : looks fond transparent, maisons fond opaque, animaux fond transparent). Ignore les fichiers déjà générés (relancer pour ajouter/compléter, supprimer un fichier précis pour le regénérer).
 - `src/Shop.jsx` — 3 onglets (Looks/Maison/Animaux), aperçu réel par objet, achat (déduit les pièces + équipe direct) ou équipement d'un objet déjà possédé.
 - `src/AvatarDisplay.jsx` — `AvatarDisplay` (image de maison plein cadre en arrière-plan + look équipé par-dessus + animal en overlay coin inférieur droit, utilisé dans l'en-tête de `MainApp`) et `LookImage` (juste l'image, réutilisé pour les aperçus boutique).
-- `src/App.jsx` — `MainApp` : affiche avatar/niveau/langue/variante/solde de pièces/progression XP, menu (flashcards/quiz/machine à sous/boutique), `addCoins`/`addXp`/`buyItem`/`equipItem` mettent à jour l'état local ET écrivent dans Supabase.
+- `src/App.jsx` — `MainApp` : affiche avatar/niveau/langue/variante/solde de pièces/progression XP/XP+pièces du jour, menu (flashcards/quiz/machine à sous/roue/coffres/Défi du jour/boutique), `addCoins`/`addXp`/`buyItem`/`equipItem`/`spinWheel`/`openChest`/`startChallenge`/`playChallenge` mettent à jour l'état local ET écrivent dans Supabase. PWA : `InstallButton` (capture `beforeinstallprompt`, instructions dédiées sur iOS Safari qui n'a pas cet événement).
 - `supabase/schema.sql` — schéma à jour (source de vérité pour un nouveau projet). Le projet réel a été migré à la main via le SQL Editor (voir "État actuel").
 - `.env.example` — variables nécessaires (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
 - `.claude/launch.json` — config du serveur de dev pour l'aperçu navigateur.

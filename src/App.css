@@ -272,6 +272,37 @@ button:disabled {
   margin-bottom: 12px;
 }
 
+.odds-title {
+  font-size: 14px;
+  margin: 16px 0 4px;
+}
+
+.odds-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  width: 100%;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.odds-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.odds-list li:last-child {
+  border-bottom: none;
+}
+
+.odds-percent {
+  font-weight: 600;
+  color: var(--accent-dark);
+}
+
 .avatar-display {
   display: flex;
   flex-direction: column;

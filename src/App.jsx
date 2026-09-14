@@ -10,7 +10,8 @@ import DailyWheel from './DailyWheel'
 import Chests from './Chests'
 import AvatarDisplay from './AvatarDisplay'
 import LevelProgress from './LevelProgress'
-import { levelTier, applyDailyXp, DAILY_XP_CAP } from './content/level'
+import DailyChallenge from './games/DailyChallenge'
+import { levelTier, applyDailyXp, DAILY_XP_CAP, applyDailyCoins, DAILY_COINS_CAP } from './content/level'
 import './App.css'
 
 function todayISO() {
@@ -51,14 +52,25 @@ function Loaded() {
 }
 
 function MainApp({ profile, onProfileChange }) {
-  const [view, setView] = useState('home') // 'home' | 'flashcards' | 'quiz' | 'slots' | 'shop'
+  const [view, setView] = useState('home') // 'home' | 'flashcards' | 'quiz' | 'slots' | 'wheel' | 'chests' | 'challenge' | 'shop'
   const [levelUpNotice, setLevelUpNotice] = useState(null)
 
+  // Plafonnée (DAILY_COINS_CAP) — utilisée UNIQUEMENT par les sources de pièces rejouables à
+  // l'infini (machine à sous, ouverture de coffres). Renvoie {gained, capped} pour que
+  // l'appelant puisse afficher le gain réel plutôt que le montant nominal du tirage.
   async function addCoins(amount) {
-    const coins = profile.coins + amount
-    onProfileChange({ ...profile, coins })
-    const { error } = await supabase.from('profiles').update({ coins }).eq('id', profile.id)
+    const today = todayISO()
+    const { coins, coinsToday, coinsTodayDate, gained, capped } = applyDailyCoins(
+      { coins: profile.coins, coins_today: profile.coins_today || 0, coins_today_date: profile.coins_today_date },
+      amount,
+      today
+    )
+    onProfileChange({ ...profile, coins, coins_today: coinsToday, coins_today_date: coinsTodayDate })
+    const { error } = await supabase.from('profiles')
+      .update({ coins, coins_today: coinsToday, coins_today_date: coinsTodayDate })
+      .eq('id', profile.id)
     if (error) console.error(error)
+    return { gained, capped }
   }
 
   async function addXp(amount) {
@@ -95,11 +107,38 @@ function MainApp({ profile, onProfileChange }) {
     if (error) console.error(error)
   }
 
+  // Plafonnée (DAILY_COINS_CAP), même mécanisme que addCoins — un coffre ouvert reste toujours
+  // possible même une fois le plafond atteint, seul le gain réel de pièces s'arrête.
   async function openChest(coinsWon) {
-    const coins = profile.coins + coinsWon
+    const today = todayISO()
+    const { coins, coinsToday, coinsTodayDate, gained, capped } = applyDailyCoins(
+      { coins: profile.coins, coins_today: profile.coins_today || 0, coins_today_date: profile.coins_today_date },
+      coinsWon,
+      today
+    )
     const chests = Math.max(0, (profile.chests || 0) - 1)
-    onProfileChange({ ...profile, coins, chests })
-    const { error } = await supabase.from('profiles').update({ coins, chests }).eq('id', profile.id)
+    onProfileChange({ ...profile, coins, chests, coins_today: coinsToday, coins_today_date: coinsTodayDate })
+    const { error } = await supabase.from('profiles')
+      .update({ coins, chests, coins_today: coinsToday, coins_today_date: coinsTodayDate })
+      .eq('id', profile.id)
+    if (error) console.error(error)
+    return { gained, capped }
+  }
+
+  // Consomme la tentative du jour dès le lancement du Défi (pas à la fin) — sinon quitter en
+  // cours de partie et recommencer permettrait de refarmer un bon score.
+  async function startChallenge() {
+    const challenge_last_play = todayISO()
+    onProfileChange({ ...profile, challenge_last_play })
+    const { error } = await supabase.from('profiles').update({ challenge_last_play }).eq('id', profile.id)
+    if (error) console.error(error)
+  }
+
+  // Hors plafond de pièces : déjà borné à 1 fois/jour par startChallenge ci-dessus.
+  async function playChallenge(coinsWon) {
+    const coins = profile.coins + coinsWon
+    onProfileChange({ ...profile, coins })
+    const { error } = await supabase.from('profiles').update({ coins }).eq('id', profile.id)
     if (error) console.error(error)
   }
 
@@ -185,6 +224,20 @@ function MainApp({ profile, onProfileChange }) {
       />
     )
   }
+  if (view === 'challenge') {
+    return (
+      <DailyChallenge
+        language={language}
+        variant={profile.variant}
+        level={profile.level}
+        alreadyPlayed={profile.challenge_last_play === todayISO()}
+        onStart={startChallenge}
+        onXpEarned={addXp}
+        onFinish={playChallenge}
+        onExit={() => setView('home')}
+      />
+    )
+  }
 
   return (
     <div className="screen-center">
@@ -198,6 +251,9 @@ function MainApp({ profile, onProfileChange }) {
         <LevelProgress level={profile.level} xp={profile.xp || 0} />
         <p className="xp-today">
           ⚡ XP aujourd’hui : {Math.min(profile.xp_today_date === todayISO() ? (profile.xp_today || 0) : 0, DAILY_XP_CAP)}/{DAILY_XP_CAP}
+        </p>
+        <p className="xp-today">
+          🪙 Pièces aujourd’hui : {Math.min(profile.coins_today_date === todayISO() ? (profile.coins_today || 0) : 0, DAILY_COINS_CAP)}/{DAILY_COINS_CAP}
         </p>
         {levelUpNotice && (
           <div className="level-up-banner">
@@ -213,6 +269,9 @@ function MainApp({ profile, onProfileChange }) {
           <button onClick={() => setView('slots')}>🎰 Machine à sous</button>
           <button onClick={() => setView('wheel')}>🎡 Roue quotidienne</button>
           <button onClick={() => setView('chests')}>🎁 Coffres ({profile.chests || 0})</button>
+          <button onClick={() => setView('challenge')}>
+            🏆 Défi du jour {profile.challenge_last_play === todayISO() ? '✓' : ''}
+          </button>
           <button onClick={() => setView('shop')}>🛍️ Boutique</button>
         </div>
         <InstallButton />
