@@ -15,18 +15,32 @@ qui le suggérait), pensé pour Vercel + Supabase + Stripe (même pattern que le
 
 ## État actuel (2026-09-14)
 Projet Supabase réel créé et connecté (organisation "Hablo", séparée de celle de Chefup).
-Boucle complète testée EN VRAI (pas de contournement) : inscription réelle, choix de langue
-(espagnol variante Espagne/LatAm OU anglais sans variante), test de niveau, flashcards, quiz,
-machine à sous — persistance en base vérifiée après rechargement complet (`target_language`,
-`variant`, `level`, `coins`). **Piège rencontré et corrigé** : après avoir ajouté des colonnes
-au schéma, la migration avait été faite dans le fichier local `supabase/schema.sql` mais pas
-sur le vrai projet Supabase déjà créé — l'app avait l'air de marcher (état local React) mais
-rien ne persistait (écritures en erreur silencieuse `PGRST204 column not found`). Retenir : sur
-ce projet, une migration de schéma doit être exécutée sur le vrai projet Supabase (SQL Editor)
-en plus du fichier `schema.sql`, jamais l'un sans l'autre — toujours vérifier par un rechargement
-complet après une migration, pas seulement l'état affiché.
+**Déployé en production** : [github.com/alexmollet0/hablo-app](https://github.com/alexmollet0/hablo-app)
+→ [hablo-app.vercel.app](https://hablo-app.vercel.app), redéploiement auto à chaque push comme
+Chefup. Variables d'environnement Vercel (`VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`) déjà
+renseignées.
 
-**Pas encore fait** : GitHub, Vercel, Stripe. Compte de test à nettoyer plus tard dans Supabase
+Boucle complète testée EN VRAI (pas de contournement, y compris en production) : inscription
+réelle, choix de langue (espagnol variante Espagne/LatAm OU anglais sans variante), test de
+niveau, flashcards, quiz, machine à sous, **boutique** (avatar/accessoires/maison) — persistance
+en base vérifiée après rechargement complet à chaque étape.
+
+**Piège rencontré et corrigé (x2 ce jour, même cause)** : après avoir ajouté des colonnes au
+schéma (`target_language`/`coins` d'abord, puis `owned_items`/`equipped` pour la boutique), la
+migration avait été faite dans le fichier local `supabase/schema.sql` mais pas sur le vrai projet
+Supabase déjà créé — l'app avait l'air de marcher (état local React) mais rien ne persistait
+(écritures en erreur silencieuse `PGRST204 column not found`). **Retenir fermement pour toute
+future migration** : exécuter le SQL sur le vrai projet Supabase (SQL Editor) EN PLUS du fichier
+`schema.sql`, jamais l'un sans l'autre — toujours vérifier par un rechargement complet après une
+migration, pas seulement l'état affiché juste après l'action.
+
+**Premier retour utilisateur réel (2026-09-14)** : contenu pédagogique jugé trop facile (attendu,
+vocabulaire placeholder) ; pièces gagnées à la machine à sous ne servaient à rien → boutique
+ajoutée le jour même (voir "Fichiers clés"). **Retour encore à traiter, pas urgent** : élargir le
+contenu pédagogique (vocabulaire + questions) pour que ce soit un vrai challenge, priorité fixée
+par l'utilisateur APRÈS la boutique (déjà faite).
+
+**Pas encore fait** : Stripe. Compte de test à nettoyer plus tard dans Supabase
 (Authentication > Users) : `hablo.realtest.sept@gmail.com`.
 
 ## Fichiers clés
@@ -41,7 +55,10 @@ complet après une migration, pas seulement l'état affiché.
 - `src/Flashcards.jsx` — file de révision (langue-aware via `language`/`variant` props).
 - `src/games/QuizGame.jsx` — QCM classique, 10 questions.
 - `src/games/SlotMachineGame.jsx` — machine à sous : bonne réponse → tirage pondéré d'un palier (🍒 Commun 60%/+5, 🔔 Rare 25%/+15, 💎 Épique 12%/+40, 👑 Légendaire 3%/+100) → animation de rouleaux (CSS) → pièces ajoutées à `profiles.coins`. **Simplification volontaire documentée dans le code** : le tirage se fait avant l'animation, les 3 rouleaux affichent le même symbole (pas de vraie logique de correspondance indépendante par rouleau).
-- `src/App.jsx` — `MainApp` : affiche niveau/langue/variante/solde de pièces, menu (flashcards/quiz/machine à sous), `addCoins` met à jour l'état local ET écrit dans Supabase.
+- `src/content/shopItems.js` — catalogue boutique (avatar/accessoire/maison), `defaultItem`/`getEquipped` (repli sur l'objet gratuit si rien d'équipé — évite un backfill des comptes déjà créés avant la boutique). Prix calibrés sur ~150 pièces/partie de machine à sous observées en test réel.
+- `src/Shop.jsx` — 3 onglets, achat (déduit les pièces + équipe direct) ou équipement d'un objet déjà possédé.
+- `src/AvatarDisplay.jsx` — petit composant réutilisable (avatar + accessoire en overlay + maison), utilisé dans l'en-tête de `MainApp`.
+- `src/App.jsx` — `MainApp` : affiche avatar/niveau/langue/variante/solde de pièces, menu (flashcards/quiz/machine à sous/boutique), `addCoins`/`buyItem`/`equipItem` mettent à jour l'état local ET écrivent dans Supabase.
 - `supabase/schema.sql` — schéma à jour (source de vérité pour un nouveau projet). Le projet réel a été migré à la main via le SQL Editor (voir "État actuel").
 - `.env.example` — variables nécessaires (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
 - `.claude/launch.json` — config du serveur de dev pour l'aperçu navigateur.
