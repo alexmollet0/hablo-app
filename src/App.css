@@ -228,6 +228,43 @@ button:disabled {
   100% { transform: translateY(0); }
 }
 
+.xp-today {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0 0 4px;
+}
+
+.wheel-disc,
+.chest-box {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 3px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  margin: 16px auto;
+}
+
+.chest-box {
+  border-radius: 16px;
+}
+
+.wheel-disc.spinning {
+  animation: wheel-spin 0.5s linear infinite;
+}
+
+.chest-box.opening {
+  animation: reel-bounce 0.1s linear infinite;
+}
+
+@keyframes wheel-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .tier-label {
   font-size: 18px;
   font-weight: 600;

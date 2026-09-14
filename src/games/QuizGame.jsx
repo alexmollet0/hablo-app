@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { LANGUAGES } from '../content/language'
 import { buildQuizRounds } from '../content/quizRounds'
 
 const QUESTIONS_PER_ROUND = 10
 
-export default function QuizGame({ language, variant, level, onXpEarned, onExit }) {
+export default function QuizGame({ language, variant, level, onXpEarned, onChestEarned, onExit }) {
   const pool = useMemo(
     () => LANGUAGES[language].vocab.filter((c) => c.level <= level),
     [language, level]
@@ -13,6 +13,11 @@ export default function QuizGame({ language, variant, level, onXpEarned, onExit 
   const [index, setIndex] = useState(0)
   const [score, setScore] = useState(0)
   const [selected, setSelected] = useState(null)
+
+  useEffect(() => {
+    if (index >= rounds.length) onChestEarned()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index >= rounds.length])
 
   if (pool.length < 4) {
     return (

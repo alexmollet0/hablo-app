@@ -1,31 +1,15 @@
 import { useMemo, useRef, useState } from 'react'
 import { LANGUAGES } from '../content/language'
 import { buildQuizRounds } from '../content/quizRounds'
+import { drawTier } from '../content/rewardTiers'
 
 const QUESTIONS_PER_ROUND = 10
 const SPIN_SYMBOLS = ['🍒', '🔔', '💎', '👑', '⭐', '🍋']
 const SPIN_DURATION_MS = 900
 const SPIN_TICK_MS = 80
-
-// Paliers de récompense — tirage pondéré AVANT l'animation (simplification volontaire pour la
-// V1 : les 3 rouleaux affichent tous le même symbole final, pas une vraie logique de
-// correspondance indépendante par rouleau).
-const TIERS = [
-  { key: 'commun', label: 'Commun', emoji: '🍒', weight: 60, coins: 5 },
-  { key: 'rare', label: 'Rare', emoji: '🔔', weight: 25, coins: 15 },
-  { key: 'epique', label: 'Épique', emoji: '💎', weight: 12, coins: 40 },
-  { key: 'legendaire', label: 'Légendaire', emoji: '👑', weight: 3, coins: 100 },
-]
-
-function drawTier() {
-  const totalWeight = TIERS.reduce((sum, t) => sum + t.weight, 0)
-  let roll = Math.random() * totalWeight
-  for (const tier of TIERS) {
-    if (roll < tier.weight) return tier
-    roll -= tier.weight
-  }
-  return TIERS[0]
-}
+// Tirage pondéré AVANT l'animation (simplification volontaire pour la V1 : les 3 rouleaux
+// affichent tous le même symbole final, pas une vraie logique de correspondance indépendante
+// par rouleau) — voir content/rewardTiers.js pour les paliers, partagés avec la roue/les coffres.
 
 export default function SlotMachineGame({ language, variant, level, onCoinsEarned, onExit }) {
   const pool = useMemo(

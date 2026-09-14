@@ -40,3 +40,26 @@ export function applyXp(profile, gained) {
 
   return { xp, level, coinsAwarded, leveledUp: coinsAwarded > 0 }
 }
+
+// Plafond d'XP gagnable par jour (calendaire) — sans ça, rejouer le quiz en boucle permet
+// d'atteindre le niveau max en quelques minutes ; les flashcards sont déjà limitées naturellement
+// par la répétition espacée (une carte revue aujourd'hui n'est plus due avant demain).
+export const DAILY_XP_CAP = 150
+
+// Même contrat que applyXp, mais plafonne le gain réel à ce qu'il reste de budget XP du jour
+// (réinitialisé si `xp_today_date` n'est pas aujourd'hui). `todayIso` : date du jour, format
+// YYYY-MM-DD (voir todayISO dans leitner.js pour le même format).
+export function applyDailyXp(profile, gained, todayIso) {
+  const sameDay = profile.xp_today_date === todayIso
+  const xpToday = sameDay ? profile.xp_today : 0
+  const allowed = Math.max(0, DAILY_XP_CAP - xpToday)
+  const actualGain = Math.min(gained, allowed)
+
+  const result = applyXp(profile, actualGain)
+  return {
+    ...result,
+    xpToday: xpToday + actualGain,
+    xpTodayDate: todayIso,
+    capped: actualGain < gained,
+  }
+}

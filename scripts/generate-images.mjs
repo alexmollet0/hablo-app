@@ -48,6 +48,11 @@ const HOUSE_STYLE_PREFIX =
   'with bold clean outlines and vibrant flat colors, digital illustration, portrait ' +
   'orientation, warm inviting lighting, no characters or people visible. Scene: '
 
+const ICON_STYLE_PREFIX =
+  'App icon illustration, flat vector style with bold clean black outlines, square composition, ' +
+  'centered subject filling most of the frame, solid warm orange background (#ff6b4a), simple ' +
+  'and bold enough to read at a small size, no text anywhere. Subject: '
+
 const SETS = [
   {
     dir: 'looks',
@@ -91,9 +96,18 @@ const SETS = [
       { id: 'pet_dragon', prompt: 'a small cute legendary baby dragon with shimmering gold scales, tiny wings spread, glowing softly' },
     ],
   },
+  {
+    dir: 'icons',
+    stylePrefix: ICON_STYLE_PREFIX,
+    background: 'opaque',
+    size: '1024x1024',
+    items: [
+      { id: 'icon-source', prompt: 'a friendly cartoon parrot wearing small round glasses, mid-speech with an open speech bubble shape (no text inside it), playful and welcoming' },
+    ],
+  },
 ]
 
-async function generateImage(dir, stylePrefix, background, { id, prompt }) {
+async function generateImage(dir, stylePrefix, background, size, { id, prompt }) {
   const outDir = join(root, 'public', dir)
   mkdirSync(outDir, { recursive: true })
   const outPath = join(outDir, `${id}.png`)
@@ -111,7 +125,7 @@ async function generateImage(dir, stylePrefix, background, { id, prompt }) {
     body: JSON.stringify({
       model: 'gpt-image-1',
       prompt: stylePrefix + prompt,
-      size: '1024x1536',
+      size,
       quality: 'high',
       background,
       n: 1,
@@ -130,7 +144,7 @@ async function generateImage(dir, stylePrefix, background, { id, prompt }) {
 
 for (const set of SETS) {
   for (const item of set.items) {
-    await generateImage(set.dir, set.stylePrefix, set.background, item)
+    await generateImage(set.dir, set.stylePrefix, set.background, set.size || '1024x1536', item)
   }
 }
 console.log('Terminé.')
