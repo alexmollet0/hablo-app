@@ -44,22 +44,41 @@ dessinées (voir "Looks + maisons" ci-dessous et "Fichiers clés"). **Retour enc
 urgent** : élargir le contenu pédagogique (vocabulaire + questions) pour que ce soit un vrai
 challenge, priorité fixée par l'utilisateur APRÈS la boutique/l'avatar (déjà faits).
 
-**Looks + maisons (version finale, 2026-09-14)** : après une tentative DiceBear jugée pas assez
-belle (abandonnée), passage à des **looks complets générés par IA** (OpenAI `gpt-image-1`, prompt
-commun "illustration vectorielle plate" + description de tenue qui varie, fond transparent,
-1024×1536) — achetés comme des **skins de jeu entiers**, pas des pièces à combiner (une pièce de
-vêtement générée séparément par IA ne s'alignerait pas sur le personnage — limite technique
-assumée avec l'utilisateur). 10 looks générés une fois via `scripts/generate-looks.mjs`
-(nécessite `OPENAI_API_KEY` dans `.env.local`, jamais commitée, jamais utilisée au runtime),
-images compressées en WebP après coup (~2 Mo → ~90 Ko chacune, `sharp` en devDependency) et
-servies en statique depuis `public/looks/`. **Maisons** : illustrations SVG dessinées à la main
-(6 paliers, `HouseIllustration.jsx`) plutôt que des dégradés de couleur — restent l'objet le plus
-cher du jeu (jusqu'à 50 000 pièces pour le château), en vrai arrière-plan derrière le personnage.
-Catalogue boutique réduit à 2 catégories (`look`/`maison`) — pas de migration Supabase (mêmes
+**Looks + maisons + animaux (version finale, 2026-09-14)** : après une tentative DiceBear jugée
+pas assez belle (abandonnée), tout est généré par IA (OpenAI `gpt-image-1`) via
+`scripts/generate-images.mjs` (nécessite `OPENAI_API_KEY` dans `.env.local`, jamais commitée,
+jamais utilisée au runtime — images statiques une fois générées), compressé en WebP après coup
+(~2 Mo → ~60-175 Ko chacune, `sharp` en devDependency), servi depuis `public/{looks,houses,pets}/`.
+- **Looks** (fond transparent) : achetés comme des **skins de jeu entiers**, pas des pièces à
+  combiner (une pièce de vêtement générée séparément par IA ne s'alignerait pas sur le personnage
+  — limite technique assumée avec l'utilisateur). 10 au catalogue.
+- **Maisons** (fond opaque, scène complète — d'abord tentées en SVG dessiné à la main, jugé "trop
+  simple", puis regénérées par IA comme les looks) : restent l'objet le plus cher du jeu (jusqu'à
+  50 000 pièces pour le château), en vrai arrière-plan derrière le personnage (`object-fit: cover`
+  plein cadre). 6 paliers.
+- **Animaux de compagnie** (fond transparent, nouvelle catégorie) : affichés à côté du personnage
+  (coin inférieur droit), jamais superposés — demande explicite de l'utilisateur. 5 au catalogue,
+  dragon légendaire compris.
+
+**⚠️ Bug réel trouvé et corrigé** : le mode "fond transparent" de l'API rend aussi transparentes
+les zones **blanc pur** du sujet lui-même (pas seulement l'arrière-plan) — 4 looks sur 10 (dont le
+look gratuit de départ, vu par tout nouveau compte) avaient des vêtements entiers invisibles une
+fois composés sur un fond coloré, alors que le fichier seul semblait correct sur fond blanc du
+Read tool. **Piège à retenir** : toujours vérifier une image à fond "transparent" en l'ouvrant
+SEULE sur fond sombre (`navigate` vers son URL directe), jamais seulement composée dans l'app ou
+prévisualisée sur fond blanc. Corrigé en remplaçant le blanc pur par du gris clair/crème dans les
+prompts (`CHARACTER_STYLE_PREFIX`/`PET_STYLE_PREFIX` dans `generate-images.mjs` avertissent
+maintenant explicitement contre le blanc pur pour toute future génération).
+
+Catalogue boutique : 3 catégories (`look`/`maison`/`pet`) — pas de migration Supabase (mêmes
 colonnes génériques `owned_items`/`equipped`), les objets des anciens systèmes (emoji, DiceBear)
-deviennent orphelins sans casser l'app. **Coût réel** : quelques euros pour les 10 looks de
-départ, même tarif à l'unité pour en ajouter plus tard. Idée notée pour plus tard, pas commencée :
-animaux de compagnie achetables (plus simple qu'un vêtement, pas de problème d'alignement).
+deviennent orphelins sans casser l'app. **Coût réel total (looks + maisons + animaux + une
+regénération de 4 looks)** : quelques euros.
+
+**Ordre de priorité fixé par l'utilisateur pour la suite** : (1) plus de looks (fait, pas urgent
+pour l'instant) (2) ✅ maisons + animaux (fait ce jour) (3) contenu pédagogique beaucoup plus
+poussé (vocabulaire/questions) (4) plus de jeux pour gagner des pièces (au-delà de la machine à
+sous). Aucun des points (3)/(4) commencé.
 
 **Pas encore fait** : Stripe. Compte de test à nettoyer plus tard dans Supabase
 (Authentication > Users) : `hablo.realtest.sept@gmail.com`.
@@ -76,11 +95,10 @@ animaux de compagnie achetables (plus simple qu'un vêtement, pas de problème d
 - `src/Flashcards.jsx` — file de révision (langue-aware via `language`/`variant` props).
 - `src/games/QuizGame.jsx` — QCM classique, 10 questions.
 - `src/games/SlotMachineGame.jsx` — machine à sous : bonne réponse → tirage pondéré d'un palier (🍒 Commun 60%/+5, 🔔 Rare 25%/+15, 💎 Épique 12%/+40, 👑 Légendaire 3%/+100) → animation de rouleaux (CSS) → pièces ajoutées à `profiles.coins`. **Simplification volontaire documentée dans le code** : le tirage se fait avant l'animation, les 3 rouleaux affichent le même symbole (pas de vraie logique de correspondance indépendante par rouleau).
-- `src/content/shopItems.js` — catalogue boutique, 2 catégories : `look` (image statique `image: '/looks/xxx.webp'`) et `maison` (juste métadonnées, illustration dans `HouseIllustration.jsx`). `defaultItem`/`getEquipped` (repli sur l'objet gratuit si rien d'équipé). Prix des looks calibrés pour être moins chers que les maisons (la richesse se montre par le logement).
-- `src/HouseIllustration.jsx` — 6 illustrations SVG dessinées à la main (une par palier de maison), pas de génération IA (pas de problème d'alignement pour un simple arrière-plan).
-- `scripts/generate-looks.mjs` — script ponctuel (jamais exécuté en prod) qui appelle l'API OpenAI (`gpt-image-1`) pour générer les images de `public/looks/`. Relancer seulement pour ajouter/regénérer un look.
-- `src/Shop.jsx` — 2 onglets (Looks/Maison), aperçu réel par objet (image du look, ou illustration de la maison), achat (déduit les pièces + équipe direct) ou équipement d'un objet déjà possédé.
-- `src/AvatarDisplay.jsx` — `AvatarDisplay` (illustration de maison en arrière-plan + image du look équipé par-dessus, utilisé dans l'en-tête de `MainApp`) et `LookImage` (juste l'image du look, réutilisé pour les aperçus boutique).
+- `src/content/shopItems.js` — catalogue boutique, 3 catégories (`look`/`maison`/`pet`), chaque objet porte `image: '/xxx/yyy.webp'` (ou `null` pour "Aucun animal"). `defaultItem`/`getEquipped` (repli sur l'objet gratuit si rien d'équipé). Prix des looks/animaux calibrés pour être moins chers que les maisons (la richesse se montre par le logement).
+- `scripts/generate-images.mjs` — script ponctuel (jamais exécuté en prod) qui appelle l'API OpenAI (`gpt-image-1`) pour générer les 3 ensembles d'images (`SETS` : looks fond transparent, maisons fond opaque, animaux fond transparent). Ignore les fichiers déjà générés (relancer pour ajouter/compléter, supprimer un fichier précis pour le regénérer).
+- `src/Shop.jsx` — 3 onglets (Looks/Maison/Animaux), aperçu réel par objet, achat (déduit les pièces + équipe direct) ou équipement d'un objet déjà possédé.
+- `src/AvatarDisplay.jsx` — `AvatarDisplay` (image de maison plein cadre en arrière-plan + look équipé par-dessus + animal en overlay coin inférieur droit, utilisé dans l'en-tête de `MainApp`) et `LookImage` (juste l'image, réutilisé pour les aperçus boutique).
 - `src/App.jsx` — `MainApp` : affiche avatar/niveau/langue/variante/solde de pièces, menu (flashcards/quiz/machine à sous/boutique), `addCoins`/`buyItem`/`equipItem` mettent à jour l'état local ET écrivent dans Supabase.
 - `supabase/schema.sql` — schéma à jour (source de vérité pour un nouveau projet). Le projet réel a été migré à la main via le SQL Editor (voir "État actuel").
 - `.env.example` — variables nécessaires (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
