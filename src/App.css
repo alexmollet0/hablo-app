@@ -250,11 +250,12 @@ button:disabled {
   overflow: hidden;
 }
 
-.house-svg {
+.house-photo {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
   display: block;
 }
 
@@ -266,8 +267,16 @@ button:disabled {
 .avatar-frame .avatar-image {
   position: absolute;
   bottom: 0;
-  left: 50%;
+  left: 42%;
   transform: translateX(-50%);
+}
+
+.pet-image {
+  position: absolute;
+  bottom: 6px;
+  right: 10px;
+  height: 70px;
+  display: block;
 }
 
 .avatar-house {
@@ -302,6 +311,14 @@ button:disabled {
   border-radius: 10px;
   overflow: hidden;
   margin: 0 auto 4px;
+  background: var(--border);
+}
+
+.shop-item-house {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .shop-item-name {
