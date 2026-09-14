@@ -75,31 +75,48 @@ colonnes génériques `owned_items`/`equipped`), les objets des anciens système
 deviennent orphelins sans casser l'app. **Coût réel total (looks + maisons + animaux + une
 regénération de 4 looks)** : quelques euros.
 
-**Ordre de priorité fixé par l'utilisateur pour la suite** : (1) plus de looks (fait, pas urgent
-pour l'instant) (2) ✅ maisons + animaux (fait ce jour) (3) contenu pédagogique beaucoup plus
-poussé (vocabulaire/questions) (4) plus de jeux pour gagner des pièces (au-delà de la machine à
-sous). Aucun des points (3)/(4) commencé.
+**Ordre de priorité fixé par l'utilisateur** : (1) plus de looks (pas urgent) (2) ✅ maisons +
+animaux (3) ✅ contenu pédagogique + système de niveaux (4) plus de jeux pour gagner des pièces
+(au-delà de la machine à sous) — **seul point (4) pas commencé**.
 
-**Pas encore fait** : Stripe. Compte de test à nettoyer plus tard dans Supabase
-(Authentication > Users) : `hablo.realtest.sept@gmail.com`.
+**Système de niveaux XP (2026-09-14)** : `profile.level` était figé une fois pour toutes par le
+test de placement — transformé en vraie progression continue. Le test de placement fixe
+maintenant un **point de départ**, plus un plafond : flashcard correcte +5 XP (+1 ratée),
+bonne réponse au quiz +8 XP (pas la machine à sous, qui reste centrée pièces), seuil
+`100 + (niveau-1)×50` XP par palier, récompense `50×nouveau niveau` pièces à chaque niveau
+franchi. Logique dans `src/content/level.js` (`xpToNextLevel`/`applyXp`). Écrans : badge
+"Nv. X" superposé sur l'avatar (`AvatarDisplay.jsx`, visible d'un coup d'œil — prépare le
+multijoueur), frise de progression illustrée 9 pastilles + barre XP (`LevelProgress.jsx`),
+bandeau de félicitations au level-up (état local `levelUpNotice` dans `MainApp`). Nouvelle
+colonne `xp` sur `profiles` — **migration à exécuter sur le vrai projet Supabase avant de
+tester** (`alter table profiles add column if not exists xp int not null default 0;`).
+
+**Contenu élargi (2026-09-14)** : vocabulaire par langue passé de 48 à **129 mots** (~14-15 par
+niveau au lieu de 5-6), vérifié programmatiquement (ids uniques, `level`/`topic`/`fr` alignés
+entre `vocabEs.js`/`vocabEn.js` pour chaque concept — script de vérif non conservé, à refaire si
+le contenu est encore élargi). Tests de placement relus, jugés déjà clairs, non modifiés.
+
+**Pas encore fait** : Stripe, plus de jeux pour gagner des pièces. Compte de test à nettoyer plus
+tard dans Supabase (Authentication > Users) : `hablo.realtest.sept@gmail.com`.
 
 ## Fichiers clés
 - `src/supabaseClient.js` — client Supabase, `isSupabaseConfigured` (false si `.env.local` vide → écran "Configuration manquante" au lieu de planter).
 - `src/Auth.jsx` — `AuthGate` : mot de passe ou code à 6 chiffres par email. Pas de Google OAuth pour l'instant.
 - `src/content/language.js` — registre central des langues (`{ es: {...}, en: {...} }`, vocabulaire + questions de test + `hasVariant`) + `getWord(card, lang, variant)`. Point d'entrée à utiliser partout plutôt que d'importer un contenu de langue directement.
-- `src/content/vocabEs.js` / `vocabEn.js` — vocabulaire par langue (48 mots chacun, mêmes `id`/`level`/`topic`/`fr` en parallèle). Espagnol a des vraies différences Espagne/LatAm (coche/carro, ordenador/computadora, móvil/celular, zumo/jugo, patata/papa, billete/boleto) ; anglais n'a pas de distinction UK/US pour l'instant. **Contenu volontairement limité (v1 = preuve de mécanisme), à élargir largement avant un vrai lancement.**
-- `src/content/placementTestEs.js` / `placementTestEn.js` — 15 questions par langue, mêmes poids 1-9. `src/content/level.js` — `scorePlacementTest`/`levelTier`, logique partagée indépendante de la langue.
+- `src/content/vocabEs.js` / `vocabEn.js` — vocabulaire par langue (129 mots chacun, ~14-15 par niveau, mêmes `id`/`level`/`topic`/`fr` en parallèle). Espagnol a des vraies différences Espagne/LatAm (coche/carro, ordenador/computadora, móvil/celular, zumo/jugo, patata/papa, billete/boleto) ; anglais n'a pas de distinction UK/US pour l'instant.
+- `src/content/placementTestEs.js` / `placementTestEn.js` — 15 questions par langue, mêmes poids 1-9. `src/content/level.js` — `scorePlacementTest`/`levelTier` (test de placement) + `xpToNextLevel`/`applyXp`/`MAX_LEVEL` (système de niveaux XP), logique partagée indépendante de la langue.
 - `src/content/quizRounds.js` — construction de questions à choix multiple (mélange + distracteurs), factorisé et réutilisé par `QuizGame` et `SlotMachineGame`.
 - `src/leitner.js` — répétition espacée simplifiée (4 boîtes, intervalles 0/1/3/7 jours), volontairement plus simple qu'un SM-2 complet.
-- `src/Onboarding.jsx` + `src/PlacementTest.jsx` — étapes : choix de la langue → (variante si espagnol) → test de niveau → résultat. Écrit `target_language`/`variant`/`level`/`onboarded` dans `profiles`.
-- `src/Flashcards.jsx` — file de révision (langue-aware via `language`/`variant` props).
-- `src/games/QuizGame.jsx` — QCM classique, 10 questions.
+- `src/Onboarding.jsx` + `src/PlacementTest.jsx` — étapes : choix de la langue → (variante si espagnol) → test de niveau → résultat. Écrit `target_language`/`variant`/`level`/`xp`/`onboarded` dans `profiles`.
+- `src/Flashcards.jsx` — file de révision (langue-aware via `language`/`variant` props), `onXpEarned` sur chaque réponse.
+- `src/games/QuizGame.jsx` — QCM classique, 10 questions, `onXpEarned` sur bonne réponse.
+- `src/LevelProgress.jsx` — frise de progression illustrée (9 paliers + barre XP), affichée sous l'avatar sur l'accueil.
 - `src/games/SlotMachineGame.jsx` — machine à sous : bonne réponse → tirage pondéré d'un palier (🍒 Commun 60%/+5, 🔔 Rare 25%/+15, 💎 Épique 12%/+40, 👑 Légendaire 3%/+100) → animation de rouleaux (CSS) → pièces ajoutées à `profiles.coins`. **Simplification volontaire documentée dans le code** : le tirage se fait avant l'animation, les 3 rouleaux affichent le même symbole (pas de vraie logique de correspondance indépendante par rouleau).
 - `src/content/shopItems.js` — catalogue boutique, 3 catégories (`look`/`maison`/`pet`), chaque objet porte `image: '/xxx/yyy.webp'` (ou `null` pour "Aucun animal"). `defaultItem`/`getEquipped` (repli sur l'objet gratuit si rien d'équipé). Prix des looks/animaux calibrés pour être moins chers que les maisons (la richesse se montre par le logement).
 - `scripts/generate-images.mjs` — script ponctuel (jamais exécuté en prod) qui appelle l'API OpenAI (`gpt-image-1`) pour générer les 3 ensembles d'images (`SETS` : looks fond transparent, maisons fond opaque, animaux fond transparent). Ignore les fichiers déjà générés (relancer pour ajouter/compléter, supprimer un fichier précis pour le regénérer).
 - `src/Shop.jsx` — 3 onglets (Looks/Maison/Animaux), aperçu réel par objet, achat (déduit les pièces + équipe direct) ou équipement d'un objet déjà possédé.
 - `src/AvatarDisplay.jsx` — `AvatarDisplay` (image de maison plein cadre en arrière-plan + look équipé par-dessus + animal en overlay coin inférieur droit, utilisé dans l'en-tête de `MainApp`) et `LookImage` (juste l'image, réutilisé pour les aperçus boutique).
-- `src/App.jsx` — `MainApp` : affiche avatar/niveau/langue/variante/solde de pièces, menu (flashcards/quiz/machine à sous/boutique), `addCoins`/`buyItem`/`equipItem` mettent à jour l'état local ET écrivent dans Supabase.
+- `src/App.jsx` — `MainApp` : affiche avatar/niveau/langue/variante/solde de pièces/progression XP, menu (flashcards/quiz/machine à sous/boutique), `addCoins`/`addXp`/`buyItem`/`equipItem` mettent à jour l'état local ET écrivent dans Supabase.
 - `supabase/schema.sql` — schéma à jour (source de vérité pour un nouveau projet). Le projet réel a été migré à la main via le SQL Editor (voir "État actuel").
 - `.env.example` — variables nécessaires (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
 - `.claude/launch.json` — config du serveur de dev pour l'aperçu navigateur.
