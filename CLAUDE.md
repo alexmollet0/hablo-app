@@ -36,9 +36,23 @@ migration, pas seulement l'état affiché juste après l'action.
 
 **Premier retour utilisateur réel (2026-09-14)** : contenu pédagogique jugé trop facile (attendu,
 vocabulaire placeholder) ; pièces gagnées à la machine à sous ne servaient à rien → boutique
-ajoutée le jour même (voir "Fichiers clés"). **Retour encore à traiter, pas urgent** : élargir le
-contenu pédagogique (vocabulaire + questions) pour que ce soit un vrai challenge, priorité fixée
-par l'utilisateur APRÈS la boutique (déjà faite).
+ajoutée le jour même. **Deuxième retour le même jour** : le premier avatar (emoji) jugé pas assez
+beau/pas additif → refondu avec un vrai avatar en couches (DiceBear, style Micah) — voir
+"Fichiers clés". **Retour encore à traiter, pas urgent** : élargir le contenu pédagogique
+(vocabulaire + questions) pour que ce soit un vrai challenge, priorité fixée par l'utilisateur
+APRÈS la boutique/l'avatar (déjà faits).
+
+**Avatar en couches (2026-09-14)** : `@dicebear/core` + `@dicebear/collection` (style **Micah**,
+licence **CC BY 4.0** — usage commercial OK, attribution obligatoire, crédit affiché en bas de
+`Shop.jsx`), rendu 100% côté client (pas l'API HTTP publique de DiceBear, non garantie en prod).
+Catégories boutique passées de 3 (avatar/accessoire/maison) à 5 (**hair**/**shirt**/**glasses**/
+**earrings**/maison) — pas de migration Supabase nécessaire (`owned_items`/`equipped` déjà
+génériques). Les objets possédés par les comptes de test sous l'ancien schéma de catégories
+deviennent orphelins sans casser l'app (repli automatique sur l'objet gratuit de chaque nouvelle
+catégorie). Identité de base (visage/carnation/yeux) fixée par `seed: profile.id`, pas achetable
+en v1. Vrai style "manga" pas possible sans illustrateur ou pipeline d'art IA cohérente (discuté
+et assumé avec l'utilisateur) — cette base en couches est remplaçable par du vrai art plus tard
+sans changer la structure (juste les images).
 
 **Pas encore fait** : Stripe. Compte de test à nettoyer plus tard dans Supabase
 (Authentication > Users) : `hablo.realtest.sept@gmail.com`.
@@ -55,9 +69,10 @@ par l'utilisateur APRÈS la boutique (déjà faite).
 - `src/Flashcards.jsx` — file de révision (langue-aware via `language`/`variant` props).
 - `src/games/QuizGame.jsx` — QCM classique, 10 questions.
 - `src/games/SlotMachineGame.jsx` — machine à sous : bonne réponse → tirage pondéré d'un palier (🍒 Commun 60%/+5, 🔔 Rare 25%/+15, 💎 Épique 12%/+40, 👑 Légendaire 3%/+100) → animation de rouleaux (CSS) → pièces ajoutées à `profiles.coins`. **Simplification volontaire documentée dans le code** : le tirage se fait avant l'animation, les 3 rouleaux affichent le même symbole (pas de vraie logique de correspondance indépendante par rouleau).
-- `src/content/shopItems.js` — catalogue boutique (avatar/accessoire/maison), `defaultItem`/`getEquipped` (repli sur l'objet gratuit si rien d'équipé — évite un backfill des comptes déjà créés avant la boutique). Prix calibrés sur ~150 pièces/partie de machine à sous observées en test réel.
-- `src/Shop.jsx` — 3 onglets, achat (déduit les pièces + équipe direct) ou équipement d'un objet déjà possédé.
-- `src/AvatarDisplay.jsx` — petit composant réutilisable (avatar + accessoire en overlay + maison), utilisé dans l'en-tête de `MainApp`.
+- `src/content/shopItems.js` — catalogue boutique (hair/shirt/glasses/earrings/maison), chaque objet porte les vraies options DiceBear à appliquer (`{ hair: ['pixie'], hairColor: ['77311d'] }`...) sauf `maison` qui porte juste un dégradé de fond (`bg`). `defaultItem`/`getEquipped` (repli sur l'objet gratuit si rien d'équipé). Prix calibrés sur ~150 pièces/partie de machine à sous observées en test réel.
+- `src/avatarEngine.js` — `buildDicebearOptions(profile, overrides)` (fusionne les objets équipés, `overrides` permet un aperçu boutique en remplaçant une seule catégorie) + `avatarDataUri(options)` (génère le SVG via `createAvatar(micah, options).toDataUri()`).
+- `src/Shop.jsx` — 5 onglets, aperçu réel par objet (personnage combiné à l'équipement actuel, pas juste l'objet seul), achat (déduit les pièces + équipe direct) ou équipement d'un objet déjà possédé, crédit DiceBear/CC BY 4.0 en bas.
+- `src/AvatarDisplay.jsx` — `AvatarDisplay` (avatar complet + maison en arrière-plan, utilisé dans l'en-tête de `MainApp`) et `CharacterImage` (juste le personnage, réutilisé pour les aperçus boutique).
 - `src/App.jsx` — `MainApp` : affiche avatar/niveau/langue/variante/solde de pièces, menu (flashcards/quiz/machine à sous/boutique), `addCoins`/`buyItem`/`equipItem` mettent à jour l'état local ET écrivent dans Supabase.
 - `supabase/schema.sql` — schéma à jour (source de vérité pour un nouveau projet). Le projet réel a été migré à la main via le SQL Editor (voir "État actuel").
 - `.env.example` — variables nécessaires (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
