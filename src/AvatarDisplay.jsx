@@ -1,18 +1,19 @@
 import { getEquipped } from './content/shopItems'
-import { buildDicebearOptions, avatarDataUri } from './avatarEngine'
+import HouseIllustration from './HouseIllustration'
 
-export function CharacterImage({ profile, overrides, size = 96 }) {
-  const dataUri = avatarDataUri(buildDicebearOptions(profile, overrides))
-  return <img src={dataUri} alt="" className="avatar-image" style={{ width: size, height: size }} />
+export function LookImage({ look, size = 96 }) {
+  return <img src={look.image} alt={look.name} className="avatar-image" style={{ height: size }} />
 }
 
 export default function AvatarDisplay({ profile }) {
+  const look = getEquipped(profile, 'look')
   const maison = getEquipped(profile, 'maison')
 
   return (
     <div className="avatar-display">
-      <div className="avatar-frame" style={{ background: `linear-gradient(160deg, ${maison.bg[0]}, ${maison.bg[1]})` }}>
-        <CharacterImage profile={profile} size={110} />
+      <div className="avatar-frame">
+        <HouseIllustration id={maison.id} />
+        <LookImage look={look} size={180} />
       </div>
       <p className="avatar-house">{maison.name}</p>
     </div>
