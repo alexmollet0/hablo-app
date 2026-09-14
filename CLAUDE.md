@@ -22,8 +22,9 @@ renseignées.
 
 Boucle complète testée EN VRAI (pas de contournement, y compris en production) : inscription
 réelle, choix de langue (espagnol variante Espagne/LatAm OU anglais sans variante), test de
-niveau, flashcards, quiz, machine à sous, **boutique** (avatar/accessoires/maison) — persistance
-en base vérifiée après rechargement complet à chaque étape.
+niveau, flashcards, quiz, machine à sous, **boutique** (looks IA + maisons illustrées, voir
+"Looks + maisons" ci-dessous) — persistance en base vérifiée après rechargement complet à chaque
+étape.
 
 **Piège rencontré et corrigé (x2 ce jour, même cause)** : après avoir ajouté des colonnes au
 schéma (`target_language`/`coins` d'abord, puis `owned_items`/`equipped` pour la boutique), la
@@ -36,23 +37,29 @@ migration, pas seulement l'état affiché juste après l'action.
 
 **Premier retour utilisateur réel (2026-09-14)** : contenu pédagogique jugé trop facile (attendu,
 vocabulaire placeholder) ; pièces gagnées à la machine à sous ne servaient à rien → boutique
-ajoutée le jour même. **Deuxième retour le même jour** : le premier avatar (emoji) jugé pas assez
-beau/pas additif → refondu avec un vrai avatar en couches (DiceBear, style Micah) — voir
-"Fichiers clés". **Retour encore à traiter, pas urgent** : élargir le contenu pédagogique
-(vocabulaire + questions) pour que ce soit un vrai challenge, priorité fixée par l'utilisateur
-APRÈS la boutique/l'avatar (déjà faits).
+ajoutée le jour même. **Deuxième et troisième retour le même jour** : deux itérations sur
+l'avatar (emoji jugé pas beau → DiceBear en couches jugé toujours pas assez beau/pas assez
+"manga" et maisons "juste des couleurs") → version finale : looks IA + illustrations de maison
+dessinées (voir "Looks + maisons" ci-dessous et "Fichiers clés"). **Retour encore à traiter, pas
+urgent** : élargir le contenu pédagogique (vocabulaire + questions) pour que ce soit un vrai
+challenge, priorité fixée par l'utilisateur APRÈS la boutique/l'avatar (déjà faits).
 
-**Avatar en couches (2026-09-14)** : `@dicebear/core` + `@dicebear/collection` (style **Micah**,
-licence **CC BY 4.0** — usage commercial OK, attribution obligatoire, crédit affiché en bas de
-`Shop.jsx`), rendu 100% côté client (pas l'API HTTP publique de DiceBear, non garantie en prod).
-Catégories boutique passées de 3 (avatar/accessoire/maison) à 5 (**hair**/**shirt**/**glasses**/
-**earrings**/maison) — pas de migration Supabase nécessaire (`owned_items`/`equipped` déjà
-génériques). Les objets possédés par les comptes de test sous l'ancien schéma de catégories
-deviennent orphelins sans casser l'app (repli automatique sur l'objet gratuit de chaque nouvelle
-catégorie). Identité de base (visage/carnation/yeux) fixée par `seed: profile.id`, pas achetable
-en v1. Vrai style "manga" pas possible sans illustrateur ou pipeline d'art IA cohérente (discuté
-et assumé avec l'utilisateur) — cette base en couches est remplaçable par du vrai art plus tard
-sans changer la structure (juste les images).
+**Looks + maisons (version finale, 2026-09-14)** : après une tentative DiceBear jugée pas assez
+belle (abandonnée), passage à des **looks complets générés par IA** (OpenAI `gpt-image-1`, prompt
+commun "illustration vectorielle plate" + description de tenue qui varie, fond transparent,
+1024×1536) — achetés comme des **skins de jeu entiers**, pas des pièces à combiner (une pièce de
+vêtement générée séparément par IA ne s'alignerait pas sur le personnage — limite technique
+assumée avec l'utilisateur). 10 looks générés une fois via `scripts/generate-looks.mjs`
+(nécessite `OPENAI_API_KEY` dans `.env.local`, jamais commitée, jamais utilisée au runtime),
+images compressées en WebP après coup (~2 Mo → ~90 Ko chacune, `sharp` en devDependency) et
+servies en statique depuis `public/looks/`. **Maisons** : illustrations SVG dessinées à la main
+(6 paliers, `HouseIllustration.jsx`) plutôt que des dégradés de couleur — restent l'objet le plus
+cher du jeu (jusqu'à 50 000 pièces pour le château), en vrai arrière-plan derrière le personnage.
+Catalogue boutique réduit à 2 catégories (`look`/`maison`) — pas de migration Supabase (mêmes
+colonnes génériques `owned_items`/`equipped`), les objets des anciens systèmes (emoji, DiceBear)
+deviennent orphelins sans casser l'app. **Coût réel** : quelques euros pour les 10 looks de
+départ, même tarif à l'unité pour en ajouter plus tard. Idée notée pour plus tard, pas commencée :
+animaux de compagnie achetables (plus simple qu'un vêtement, pas de problème d'alignement).
 
 **Pas encore fait** : Stripe. Compte de test à nettoyer plus tard dans Supabase
 (Authentication > Users) : `hablo.realtest.sept@gmail.com`.
@@ -69,10 +76,11 @@ sans changer la structure (juste les images).
 - `src/Flashcards.jsx` — file de révision (langue-aware via `language`/`variant` props).
 - `src/games/QuizGame.jsx` — QCM classique, 10 questions.
 - `src/games/SlotMachineGame.jsx` — machine à sous : bonne réponse → tirage pondéré d'un palier (🍒 Commun 60%/+5, 🔔 Rare 25%/+15, 💎 Épique 12%/+40, 👑 Légendaire 3%/+100) → animation de rouleaux (CSS) → pièces ajoutées à `profiles.coins`. **Simplification volontaire documentée dans le code** : le tirage se fait avant l'animation, les 3 rouleaux affichent le même symbole (pas de vraie logique de correspondance indépendante par rouleau).
-- `src/content/shopItems.js` — catalogue boutique (hair/shirt/glasses/earrings/maison), chaque objet porte les vraies options DiceBear à appliquer (`{ hair: ['pixie'], hairColor: ['77311d'] }`...) sauf `maison` qui porte juste un dégradé de fond (`bg`). `defaultItem`/`getEquipped` (repli sur l'objet gratuit si rien d'équipé). Prix calibrés sur ~150 pièces/partie de machine à sous observées en test réel.
-- `src/avatarEngine.js` — `buildDicebearOptions(profile, overrides)` (fusionne les objets équipés, `overrides` permet un aperçu boutique en remplaçant une seule catégorie) + `avatarDataUri(options)` (génère le SVG via `createAvatar(micah, options).toDataUri()`).
-- `src/Shop.jsx` — 5 onglets, aperçu réel par objet (personnage combiné à l'équipement actuel, pas juste l'objet seul), achat (déduit les pièces + équipe direct) ou équipement d'un objet déjà possédé, crédit DiceBear/CC BY 4.0 en bas.
-- `src/AvatarDisplay.jsx` — `AvatarDisplay` (avatar complet + maison en arrière-plan, utilisé dans l'en-tête de `MainApp`) et `CharacterImage` (juste le personnage, réutilisé pour les aperçus boutique).
+- `src/content/shopItems.js` — catalogue boutique, 2 catégories : `look` (image statique `image: '/looks/xxx.webp'`) et `maison` (juste métadonnées, illustration dans `HouseIllustration.jsx`). `defaultItem`/`getEquipped` (repli sur l'objet gratuit si rien d'équipé). Prix des looks calibrés pour être moins chers que les maisons (la richesse se montre par le logement).
+- `src/HouseIllustration.jsx` — 6 illustrations SVG dessinées à la main (une par palier de maison), pas de génération IA (pas de problème d'alignement pour un simple arrière-plan).
+- `scripts/generate-looks.mjs` — script ponctuel (jamais exécuté en prod) qui appelle l'API OpenAI (`gpt-image-1`) pour générer les images de `public/looks/`. Relancer seulement pour ajouter/regénérer un look.
+- `src/Shop.jsx` — 2 onglets (Looks/Maison), aperçu réel par objet (image du look, ou illustration de la maison), achat (déduit les pièces + équipe direct) ou équipement d'un objet déjà possédé.
+- `src/AvatarDisplay.jsx` — `AvatarDisplay` (illustration de maison en arrière-plan + image du look équipé par-dessus, utilisé dans l'en-tête de `MainApp`) et `LookImage` (juste l'image du look, réutilisé pour les aperçus boutique).
 - `src/App.jsx` — `MainApp` : affiche avatar/niveau/langue/variante/solde de pièces, menu (flashcards/quiz/machine à sous/boutique), `addCoins`/`buyItem`/`equipItem` mettent à jour l'état local ET écrivent dans Supabase.
 - `supabase/schema.sql` — schéma à jour (source de vérité pour un nouveau projet). Le projet réel a été migré à la main via le SQL Editor (voir "État actuel").
 - `.env.example` — variables nécessaires (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
