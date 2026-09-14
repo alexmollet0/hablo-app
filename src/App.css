@@ -312,6 +312,6 @@ button:disabled {
   padding: 8px 6px;
 }
 
-.shop-btn.equipped {
+.shop-item .shop-btn.equipped {
   background: var(--success);
 }
