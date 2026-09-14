@@ -3,6 +3,12 @@ import { supabase } from './supabaseClient'
 import PlacementTest from './PlacementTest'
 import { levelTier } from './content/level'
 import { LANGUAGES } from './content/language'
+import { SHOP_CATEGORIES, defaultItem } from './content/shopItems'
+
+const STARTER_ITEMS = SHOP_CATEGORIES.map((c) => defaultItem(c.key).id)
+const STARTER_EQUIPPED = Object.fromEntries(
+  SHOP_CATEGORIES.map((c) => [c.key, defaultItem(c.key).id])
+)
 
 export default function Onboarding({ userId, onDone }) {
   const [step, setStep] = useState('language') // 'language' | 'variant' | 'test' | 'result'
@@ -26,6 +32,8 @@ export default function Onboarding({ userId, onDone }) {
       variant: LANGUAGES[language].hasVariant ? variant : null,
       level: computedLevel,
       onboarded: true,
+      owned_items: STARTER_ITEMS,
+      equipped: STARTER_EQUIPPED,
     })
     setSaving(false)
     if (error) console.error(error)
@@ -90,6 +98,8 @@ export default function Onboarding({ userId, onDone }) {
             level,
             onboarded: true,
             coins: 0,
+            owned_items: STARTER_ITEMS,
+            equipped: STARTER_EQUIPPED,
           })}
         >
           {saving ? 'Enregistrement…' : 'Commencer'}

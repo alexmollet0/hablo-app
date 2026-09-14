@@ -8,6 +8,8 @@ create table if not exists profiles (
   onboarded boolean not null default false,
   has_paid_access boolean not null default false,
   coins int not null default 0,
+  owned_items text[] not null default '{}',
+  equipped jsonb not null default '{}',
   created_at timestamptz not null default now(),
   constraint profiles_variant_language_check check (
     (target_language = 'es' and variant in ('ES', 'LatAm'))
