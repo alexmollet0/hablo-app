@@ -7,7 +7,8 @@ import QuizGame from './games/QuizGame'
 import SlotMachineGame from './games/SlotMachineGame'
 import Shop from './Shop'
 import AvatarDisplay from './AvatarDisplay'
-import { levelTier } from './content/level'
+import LevelProgress from './LevelProgress'
+import { levelTier, applyXp } from './content/level'
 import './App.css'
 
 export default function App() {
@@ -45,11 +46,24 @@ function Loaded() {
 
 function MainApp({ profile, onProfileChange }) {
   const [view, setView] = useState('home') // 'home' | 'flashcards' | 'quiz' | 'slots' | 'shop'
+  const [levelUpNotice, setLevelUpNotice] = useState(null)
 
   async function addCoins(amount) {
     const coins = profile.coins + amount
     onProfileChange({ ...profile, coins })
     const { error } = await supabase.from('profiles').update({ coins }).eq('id', profile.id)
+    if (error) console.error(error)
+  }
+
+  async function addXp(amount) {
+    const { xp, level, coinsAwarded, leveledUp } = applyXp(
+      { xp: profile.xp || 0, level: profile.level },
+      amount
+    )
+    const coins = profile.coins + coinsAwarded
+    onProfileChange({ ...profile, xp, level, coins })
+    if (leveledUp) setLevelUpNotice({ level, coins: coinsAwarded })
+    const { error } = await supabase.from('profiles').update({ xp, level, coins }).eq('id', profile.id)
     if (error) console.error(error)
   }
 
@@ -89,6 +103,7 @@ function MainApp({ profile, onProfileChange }) {
         language={language}
         variant={profile.variant}
         level={profile.level}
+        onXpEarned={addXp}
         onExit={() => setView('home')}
       />
     )
@@ -99,6 +114,7 @@ function MainApp({ profile, onProfileChange }) {
         language={language}
         variant={profile.variant}
         level={profile.level}
+        onXpEarned={addXp}
         onExit={() => setView('home')}
       />
     )
@@ -124,6 +140,14 @@ function MainApp({ profile, onProfileChange }) {
           {profile.variant ? ` · ${profile.variant === 'ES' ? 'Espagne' : 'Amérique Latine'}` : ''}
         </p>
         <AvatarDisplay profile={profile} />
+        <LevelProgress level={profile.level} xp={profile.xp || 0} />
+        {levelUpNotice && (
+          <div className="level-up-banner">
+            Niveau supérieur ! 🎉 Niveau {levelUpNotice.level} — +{levelUpNotice.coins} pièces
+            <br />
+            <button className="link" onClick={() => setLevelUpNotice(null)}>OK</button>
+          </div>
+        )}
         <p className="coins">🪙 {profile.coins}</p>
         <div className="menu">
           <button onClick={() => setView('flashcards')}>📇 Réviser mes flashcards</button>

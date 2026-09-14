@@ -98,6 +98,7 @@ export default function Onboarding({ userId, onDone }) {
             level,
             onboarded: true,
             coins: 0,
+            xp: 0,
             owned_items: STARTER_ITEMS,
             equipped: STARTER_EQUIPPED,
           })}

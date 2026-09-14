@@ -15,6 +15,7 @@ export default function AvatarDisplay({ profile }) {
         <img src={maison.image} alt={maison.name} className="house-photo" />
         <LookImage look={look} size={180} />
         {pet.image && <img src={pet.image} alt={pet.name} className="pet-image" />}
+        <span className="level-badge">Nv. {profile.level}</span>
       </div>
       <p className="avatar-house">{maison.name}</p>
     </div>

@@ -3,7 +3,7 @@ import { supabase } from './supabaseClient'
 import { LANGUAGES, getWord } from './content/language'
 import { initCardProgress, reviewCard, isDue } from './leitner'
 
-export default function Flashcards({ userId, language, variant, level, onExit }) {
+export default function Flashcards({ userId, language, variant, level, onXpEarned, onExit }) {
   const pool = useMemo(
     () => LANGUAGES[language].vocab.filter((c) => c.level <= level),
     [language, level]
@@ -42,6 +42,7 @@ export default function Flashcards({ userId, language, variant, level, onExit })
     setQueue(queue.slice(1))
     setFlipped(false)
     setReviewedCount((n) => n + 1)
+    onXpEarned(correct ? 5 : 1)
     const { error } = await supabase.from('card_progress').upsert({
       user_id: userId,
       card_id: current.id,

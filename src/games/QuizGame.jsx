@@ -4,7 +4,7 @@ import { buildQuizRounds } from '../content/quizRounds'
 
 const QUESTIONS_PER_ROUND = 10
 
-export default function QuizGame({ language, variant, level, onExit }) {
+export default function QuizGame({ language, variant, level, onXpEarned, onExit }) {
   const pool = useMemo(
     () => LANGUAGES[language].vocab.filter((c) => c.level <= level),
     [language, level]
@@ -41,7 +41,10 @@ export default function QuizGame({ language, variant, level, onExit }) {
   function choose(option) {
     if (selected) return
     setSelected(option)
-    if (option === round.correct) setScore((s) => s + 1)
+    if (option === round.correct) {
+      setScore((s) => s + 1)
+      onXpEarned(8)
+    }
     setTimeout(() => {
       setSelected(null)
       setIndex((i) => i + 1)

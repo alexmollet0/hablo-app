@@ -1,4 +1,4 @@
-// Vocabulaire de départ, organisé par niveau (1-9) et thème.
+// Vocabulaire, organisé par niveau (1-9) et thème.
 // `es` = forme commune aux deux variantes. `variant: { ES, LatAm }` = quand le mot diffère
 // vraiment entre espagnol d'Espagne et d'Amérique Latine (sinon on garde juste `es`).
 export const VOCAB = [
@@ -9,6 +9,15 @@ export const VOCAB = [
   { id: 'v4', level: 1, topic: 'Salutations', es: 'gracias', fr: 'merci' },
   { id: 'v5', level: 1, topic: 'Salutations', es: 'por favor', fr: 's’il te/vous plaît' },
   { id: 'v6', level: 1, topic: 'Salutations', es: 'adiós', fr: 'au revoir' },
+  { id: 'v49', level: 1, topic: 'Salutations', es: 'buenas tardes', fr: 'bon après-midi' },
+  { id: 'v50', level: 1, topic: 'Salutations', es: 'hasta luego', fr: 'à plus tard' },
+  { id: 'v51', level: 1, topic: 'Salutations', es: 'de nada', fr: 'de rien' },
+  { id: 'v52', level: 1, topic: 'Salutations', es: 'perdón', fr: 'excusez-moi' },
+  { id: 'v53', level: 1, topic: 'Salutations', es: 'lo siento', fr: 'je suis désolé' },
+  { id: 'v54', level: 1, topic: 'Salutations', es: 'bienvenido', fr: 'bienvenue' },
+  { id: 'v55', level: 1, topic: 'Salutations', es: '¿qué tal?', fr: 'comment ça va ? (familier)' },
+  { id: 'v56', level: 1, topic: 'Salutations', es: 'encantado', fr: 'enchanté' },
+  { id: 'v57', level: 1, topic: 'Salutations', es: 'buen provecho', fr: 'bon appétit' },
 
   // Niveau 2 — Bases
   { id: 'v7', level: 2, topic: 'Bases', es: 'uno', fr: 'un' },
@@ -17,6 +26,15 @@ export const VOCAB = [
   { id: 'v10', level: 2, topic: 'Bases', es: 'sí', fr: 'oui' },
   { id: 'v11', level: 2, topic: 'Bases', es: 'no', fr: 'non' },
   { id: 'v12', level: 2, topic: 'Bases', es: '¿cómo estás?', fr: 'comment vas-tu ?' },
+  { id: 'v58', level: 2, topic: 'Bases', es: 'cuatro', fr: 'quatre' },
+  { id: 'v59', level: 2, topic: 'Bases', es: 'cinco', fr: 'cinq' },
+  { id: 'v60', level: 2, topic: 'Bases', es: 'seis', fr: 'six' },
+  { id: 'v61', level: 2, topic: 'Bases', es: 'siete', fr: 'sept' },
+  { id: 'v62', level: 2, topic: 'Bases', es: 'ocho', fr: 'huit' },
+  { id: 'v63', level: 2, topic: 'Bases', es: 'nueve', fr: 'neuf' },
+  { id: 'v64', level: 2, topic: 'Bases', es: 'diez', fr: 'dix' },
+  { id: 'v65', level: 2, topic: 'Bases', es: 'también', fr: 'aussi' },
+  { id: 'v66', level: 2, topic: 'Bases', es: 'ahora', fr: 'maintenant' },
 
   // Niveau 3 — Famille
   { id: 'v13', level: 3, topic: 'Famille', es: 'madre', fr: 'mère' },
@@ -24,6 +42,15 @@ export const VOCAB = [
   { id: 'v15', level: 3, topic: 'Famille', es: 'hermana', fr: 'sœur' },
   { id: 'v16', level: 3, topic: 'Famille', es: 'hermano', fr: 'frère' },
   { id: 'v17', level: 3, topic: 'Famille', es: 'amigo', fr: 'ami' },
+  { id: 'v67', level: 3, topic: 'Famille', es: 'hijo', fr: 'fils' },
+  { id: 'v68', level: 3, topic: 'Famille', es: 'hija', fr: 'fille' },
+  { id: 'v69', level: 3, topic: 'Famille', es: 'abuelo', fr: 'grand-père' },
+  { id: 'v70', level: 3, topic: 'Famille', es: 'abuela', fr: 'grand-mère' },
+  { id: 'v71', level: 3, topic: 'Famille', es: 'tío', fr: 'oncle' },
+  { id: 'v72', level: 3, topic: 'Famille', es: 'tía', fr: 'tante' },
+  { id: 'v73', level: 3, topic: 'Famille', es: 'primo', fr: 'cousin' },
+  { id: 'v74', level: 3, topic: 'Famille', es: 'niño', fr: 'enfant (garçon)' },
+  { id: 'v75', level: 3, topic: 'Famille', es: 'novio', fr: 'petit ami' },
 
   // Niveau 4 — Nourriture
   { id: 'v18', level: 4, topic: 'Nourriture', es: 'agua', fr: 'eau' },
@@ -32,6 +59,15 @@ export const VOCAB = [
   { id: 'v21', level: 4, topic: 'Nourriture', es: 'pollo', fr: 'poulet' },
   { id: 'v22', level: 4, topic: 'Nourriture', es: 'queso', fr: 'fromage' },
   { id: 'v23', level: 4, topic: 'Nourriture', es: 'huevo', fr: 'œuf' },
+  { id: 'v76', level: 4, topic: 'Nourriture', es: 'carne', fr: 'viande' },
+  { id: 'v77', level: 4, topic: 'Nourriture', es: 'pescado', fr: 'poisson' },
+  { id: 'v78', level: 4, topic: 'Nourriture', es: 'arroz', fr: 'riz' },
+  { id: 'v79', level: 4, topic: 'Nourriture', es: 'leche', fr: 'lait' },
+  { id: 'v80', level: 4, topic: 'Nourriture', es: 'azúcar', fr: 'sucre' },
+  { id: 'v81', level: 4, topic: 'Nourriture', es: 'sal', fr: 'sel' },
+  { id: 'v82', level: 4, topic: 'Nourriture', es: 'café', fr: 'café (boisson)' },
+  { id: 'v83', level: 4, topic: 'Nourriture', es: 'vino', fr: 'vin' },
+  { id: 'v84', level: 4, topic: 'Nourriture', es: 'desayuno', fr: 'petit-déjeuner' },
 
   // Niveau 5 — Vie quotidienne (ici, les vraies différences Espagne / Amérique Latine)
   { id: 'v24', level: 5, topic: 'Vie quotidienne', variant: { ES: 'coche', LatAm: 'carro' }, fr: 'voiture' },
@@ -39,6 +75,15 @@ export const VOCAB = [
   { id: 'v26', level: 5, topic: 'Vie quotidienne', variant: { ES: 'móvil', LatAm: 'celular' }, fr: 'téléphone portable' },
   { id: 'v27', level: 5, topic: 'Vie quotidienne', variant: { ES: 'zumo', LatAm: 'jugo' }, fr: 'jus' },
   { id: 'v28', level: 5, topic: 'Vie quotidienne', variant: { ES: 'patata', LatAm: 'papa' }, fr: 'pomme de terre' },
+  { id: 'v85', level: 5, topic: 'Vie quotidienne', es: 'casa', fr: 'maison' },
+  { id: 'v86', level: 5, topic: 'Vie quotidienne', es: 'habitación', fr: 'chambre' },
+  { id: 'v87', level: 5, topic: 'Vie quotidienne', es: 'cocina', fr: 'cuisine (pièce)' },
+  { id: 'v88', level: 5, topic: 'Vie quotidienne', es: 'baño', fr: 'salle de bain' },
+  { id: 'v89', level: 5, topic: 'Vie quotidienne', es: 'ventana', fr: 'fenêtre' },
+  { id: 'v90', level: 5, topic: 'Vie quotidienne', es: 'puerta', fr: 'porte' },
+  { id: 'v91', level: 5, topic: 'Vie quotidienne', es: 'llave', fr: 'clé' },
+  { id: 'v92', level: 5, topic: 'Vie quotidienne', es: 'dinero', fr: 'argent' },
+  { id: 'v93', level: 5, topic: 'Vie quotidienne', es: 'ciudad', fr: 'ville' },
 
   // Niveau 6 — Travail
   { id: 'v29', level: 6, topic: 'Travail', es: 'trabajo', fr: 'travail' },
@@ -46,6 +91,15 @@ export const VOCAB = [
   { id: 'v31', level: 6, topic: 'Travail', es: 'reunión', fr: 'réunion' },
   { id: 'v32', level: 6, topic: 'Travail', es: 'jefe', fr: 'chef / patron' },
   { id: 'v33', level: 6, topic: 'Travail', es: 'empleado', fr: 'employé' },
+  { id: 'v94', level: 6, topic: 'Travail', es: 'escuela', fr: 'école' },
+  { id: 'v95', level: 6, topic: 'Travail', es: 'universidad', fr: 'université' },
+  { id: 'v96', level: 6, topic: 'Travail', es: 'profesor', fr: 'professeur' },
+  { id: 'v97', level: 6, topic: 'Travail', es: 'estudiante', fr: 'étudiant' },
+  { id: 'v98', level: 6, topic: 'Travail', es: 'examen', fr: 'examen' },
+  { id: 'v99', level: 6, topic: 'Travail', es: 'tarea', fr: 'devoir' },
+  { id: 'v100', level: 6, topic: 'Travail', es: 'horario', fr: 'horaire' },
+  { id: 'v101', level: 6, topic: 'Travail', es: 'salario', fr: 'salaire' },
+  { id: 'v102', level: 6, topic: 'Travail', es: 'correo electrónico', fr: 'email' },
 
   // Niveau 7 — Voyage
   { id: 'v34', level: 7, topic: 'Voyage', es: 'pasaporte', fr: 'passeport' },
@@ -53,6 +107,15 @@ export const VOCAB = [
   { id: 'v36', level: 7, topic: 'Voyage', es: 'vuelo', fr: 'vol (avion)' },
   { id: 'v37', level: 7, topic: 'Voyage', es: 'aeropuerto', fr: 'aéroport' },
   { id: 'v38', level: 7, topic: 'Voyage', variant: { ES: 'billete', LatAm: 'boleto' }, fr: 'billet' },
+  { id: 'v103', level: 7, topic: 'Voyage', es: 'tren', fr: 'train' },
+  { id: 'v104', level: 7, topic: 'Voyage', es: 'autobús', fr: 'bus' },
+  { id: 'v105', level: 7, topic: 'Voyage', es: 'estación', fr: 'gare' },
+  { id: 'v106', level: 7, topic: 'Voyage', es: 'reserva', fr: 'réservation' },
+  { id: 'v107', level: 7, topic: 'Voyage', es: 'hotel', fr: 'hôtel' },
+  { id: 'v108', level: 7, topic: 'Voyage', es: 'mapa', fr: 'carte (plan)' },
+  { id: 'v109', level: 7, topic: 'Voyage', es: 'extranjero', fr: 'étranger' },
+  { id: 'v110', level: 7, topic: 'Voyage', es: 'turista', fr: 'touriste' },
+  { id: 'v111', level: 7, topic: 'Voyage', es: 'retraso', fr: 'retard' },
 
   // Niveau 8 — Connecteurs (expressions avancées)
   { id: 'v39', level: 8, topic: 'Connecteurs', es: 'aunque', fr: 'bien que / même si' },
@@ -60,6 +123,15 @@ export const VOCAB = [
   { id: 'v41', level: 8, topic: 'Connecteurs', es: 'a pesar de', fr: 'malgré' },
   { id: 'v42', level: 8, topic: 'Connecteurs', es: 'por lo tanto', fr: 'par conséquent' },
   { id: 'v43', level: 8, topic: 'Connecteurs', es: 'de hecho', fr: 'en fait' },
+  { id: 'v112', level: 8, topic: 'Connecteurs', es: 'además', fr: 'de plus' },
+  { id: 'v113', level: 8, topic: 'Connecteurs', es: 'mientras', fr: 'pendant que' },
+  { id: 'v114', level: 8, topic: 'Connecteurs', es: 'por eso', fr: 'c’est pourquoi' },
+  { id: 'v115', level: 8, topic: 'Connecteurs', es: 'en cambio', fr: 'en revanche' },
+  { id: 'v116', level: 8, topic: 'Connecteurs', es: 'a menos que', fr: 'à moins que' },
+  { id: 'v117', level: 8, topic: 'Connecteurs', es: 'en cuanto', fr: 'dès que' },
+  { id: 'v118', level: 8, topic: 'Connecteurs', es: 'puesto que', fr: 'étant donné que' },
+  { id: 'v119', level: 8, topic: 'Connecteurs', es: 'no obstante', fr: 'néanmoins' },
+  { id: 'v120', level: 8, topic: 'Connecteurs', es: 'cuanto antes', fr: 'le plus tôt possible' },
 
   // Niveau 9 — Expressions idiomatiques
   { id: 'v44', level: 9, topic: 'Expressions', es: 'no hay de qué', fr: 'de rien / il n’y a pas de quoi' },
@@ -67,6 +139,15 @@ export const VOCAB = [
   { id: 'v46', level: 9, topic: 'Expressions', es: 'meter la pata', fr: 'faire une gaffe' },
   { id: 'v47', level: 9, topic: 'Expressions', es: 'estar hasta las narices', fr: 'en avoir marre' },
   { id: 'v48', level: 9, topic: 'Expressions', es: 'tener mala leche', fr: 'être de mauvaise humeur' },
+  { id: 'v121', level: 9, topic: 'Expressions', es: 'dar la lata', fr: 'casser les pieds (embêter)' },
+  { id: 'v122', level: 9, topic: 'Expressions', es: 'costar un ojo de la cara', fr: 'coûter les yeux de la tête' },
+  { id: 'v123', level: 9, topic: 'Expressions', es: 'ser pan comido', fr: 'être du gâteau (facile)' },
+  { id: 'v124', level: 9, topic: 'Expressions', es: 'tomar el pelo', fr: 'se moquer de quelqu’un' },
+  { id: 'v125', level: 9, topic: 'Expressions', es: 'estar en las nubes', fr: 'être dans la lune' },
+  { id: 'v126', level: 9, topic: 'Expressions', es: 'no tener pelos en la lengua', fr: 'ne pas mâcher ses mots' },
+  { id: 'v127', level: 9, topic: 'Expressions', es: 'ponerse las pilas', fr: 'se motiver' },
+  { id: 'v128', level: 9, topic: 'Expressions', es: 'dar en el clavo', fr: 'mettre dans le mille' },
+  { id: 'v129', level: 9, topic: 'Expressions', es: 'llover a cántaros', fr: 'pleuvoir des cordes' },
 ]
 
 // Retourne le mot espagnol adapté à la variante choisie par l'utilisateur ('ES' ou 'LatAm').

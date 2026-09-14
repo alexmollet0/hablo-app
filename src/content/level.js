@@ -16,3 +16,27 @@ export function levelTier(level) {
   if (level <= 6) return 'intermediaire'
   return 'difficile'
 }
+
+export const MAX_LEVEL = 9
+
+// XP nécessaire pour passer de `level` à `level + 1`.
+export function xpToNextLevel(level) {
+  return 100 + (level - 1) * 50
+}
+
+// Applique un gain d'XP à un profil, fait monter le niveau (et cumule les récompenses en
+// pièces) autant de fois que nécessaire si le gain est important. Plafonne au niveau max.
+export function applyXp(profile, gained) {
+  let level = profile.level
+  let xp = profile.xp + gained
+  let coinsAwarded = 0
+
+  while (level < MAX_LEVEL && xp >= xpToNextLevel(level)) {
+    xp -= xpToNextLevel(level)
+    level += 1
+    coinsAwarded += 50 * level
+  }
+  if (level >= MAX_LEVEL) xp = 0
+
+  return { xp, level, coinsAwarded, leveledUp: coinsAwarded > 0 }
+}

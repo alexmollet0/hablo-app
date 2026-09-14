@@ -279,6 +279,104 @@ button:disabled {
   display: block;
 }
 
+.level-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.level-progress {
+  width: 100%;
+  margin: 10px 0 4px;
+}
+
+.level-ladder {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.level-ladder::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 50%;
+  height: 2px;
+  background: var(--border);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+.level-node {
+  position: relative;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.level-node.done {
+  background: var(--success);
+  border-color: var(--success);
+  color: #fff;
+}
+
+.level-node.current {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  width: 28px;
+  height: 28px;
+}
+
+.level-xp-bar {
+  height: 8px;
+  background: var(--bg);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.level-xp-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s;
+}
+
+.level-xp-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 4px;
+}
+
+.level-up-banner {
+  background: var(--success-bg);
+  border: 1px solid var(--success);
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px 0;
+  text-align: center;
+  font-weight: 600;
+}
+
 .avatar-house {
   margin-top: 6px;
   font-size: 13px;

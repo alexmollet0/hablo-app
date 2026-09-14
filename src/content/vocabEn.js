@@ -8,6 +8,15 @@ export const VOCAB = [
   { id: 'v4', level: 1, topic: 'Salutations', en: 'thank you', fr: 'merci' },
   { id: 'v5', level: 1, topic: 'Salutations', en: 'please', fr: 's’il te/vous plaît' },
   { id: 'v6', level: 1, topic: 'Salutations', en: 'goodbye', fr: 'au revoir' },
+  { id: 'v49', level: 1, topic: 'Salutations', en: 'good afternoon', fr: 'bon après-midi' },
+  { id: 'v50', level: 1, topic: 'Salutations', en: 'see you later', fr: 'à plus tard' },
+  { id: 'v51', level: 1, topic: 'Salutations', en: 'you’re welcome', fr: 'de rien' },
+  { id: 'v52', level: 1, topic: 'Salutations', en: 'excuse me', fr: 'excusez-moi' },
+  { id: 'v53', level: 1, topic: 'Salutations', en: 'I’m sorry', fr: 'je suis désolé' },
+  { id: 'v54', level: 1, topic: 'Salutations', en: 'welcome', fr: 'bienvenue' },
+  { id: 'v55', level: 1, topic: 'Salutations', en: 'how’s it going?', fr: 'comment ça va ? (familier)' },
+  { id: 'v56', level: 1, topic: 'Salutations', en: 'nice to meet you', fr: 'enchanté' },
+  { id: 'v57', level: 1, topic: 'Salutations', en: 'enjoy your meal', fr: 'bon appétit' },
 
   // Niveau 2 — Bases
   { id: 'v7', level: 2, topic: 'Bases', en: 'one', fr: 'un' },
@@ -16,6 +25,15 @@ export const VOCAB = [
   { id: 'v10', level: 2, topic: 'Bases', en: 'yes', fr: 'oui' },
   { id: 'v11', level: 2, topic: 'Bases', en: 'no', fr: 'non' },
   { id: 'v12', level: 2, topic: 'Bases', en: 'how are you?', fr: 'comment vas-tu ?' },
+  { id: 'v58', level: 2, topic: 'Bases', en: 'four', fr: 'quatre' },
+  { id: 'v59', level: 2, topic: 'Bases', en: 'five', fr: 'cinq' },
+  { id: 'v60', level: 2, topic: 'Bases', en: 'six', fr: 'six' },
+  { id: 'v61', level: 2, topic: 'Bases', en: 'seven', fr: 'sept' },
+  { id: 'v62', level: 2, topic: 'Bases', en: 'eight', fr: 'huit' },
+  { id: 'v63', level: 2, topic: 'Bases', en: 'nine', fr: 'neuf' },
+  { id: 'v64', level: 2, topic: 'Bases', en: 'ten', fr: 'dix' },
+  { id: 'v65', level: 2, topic: 'Bases', en: 'also', fr: 'aussi' },
+  { id: 'v66', level: 2, topic: 'Bases', en: 'now', fr: 'maintenant' },
 
   // Niveau 3 — Famille
   { id: 'v13', level: 3, topic: 'Famille', en: 'mother', fr: 'mère' },
@@ -23,6 +41,15 @@ export const VOCAB = [
   { id: 'v15', level: 3, topic: 'Famille', en: 'sister', fr: 'sœur' },
   { id: 'v16', level: 3, topic: 'Famille', en: 'brother', fr: 'frère' },
   { id: 'v17', level: 3, topic: 'Famille', en: 'friend', fr: 'ami' },
+  { id: 'v67', level: 3, topic: 'Famille', en: 'son', fr: 'fils' },
+  { id: 'v68', level: 3, topic: 'Famille', en: 'daughter', fr: 'fille' },
+  { id: 'v69', level: 3, topic: 'Famille', en: 'grandfather', fr: 'grand-père' },
+  { id: 'v70', level: 3, topic: 'Famille', en: 'grandmother', fr: 'grand-mère' },
+  { id: 'v71', level: 3, topic: 'Famille', en: 'uncle', fr: 'oncle' },
+  { id: 'v72', level: 3, topic: 'Famille', en: 'aunt', fr: 'tante' },
+  { id: 'v73', level: 3, topic: 'Famille', en: 'cousin', fr: 'cousin' },
+  { id: 'v74', level: 3, topic: 'Famille', en: 'child (boy)', fr: 'enfant (garçon)' },
+  { id: 'v75', level: 3, topic: 'Famille', en: 'boyfriend', fr: 'petit ami' },
 
   // Niveau 4 — Nourriture
   { id: 'v18', level: 4, topic: 'Nourriture', en: 'water', fr: 'eau' },
@@ -31,6 +58,15 @@ export const VOCAB = [
   { id: 'v21', level: 4, topic: 'Nourriture', en: 'chicken', fr: 'poulet' },
   { id: 'v22', level: 4, topic: 'Nourriture', en: 'cheese', fr: 'fromage' },
   { id: 'v23', level: 4, topic: 'Nourriture', en: 'egg', fr: 'œuf' },
+  { id: 'v76', level: 4, topic: 'Nourriture', en: 'meat', fr: 'viande' },
+  { id: 'v77', level: 4, topic: 'Nourriture', en: 'fish', fr: 'poisson' },
+  { id: 'v78', level: 4, topic: 'Nourriture', en: 'rice', fr: 'riz' },
+  { id: 'v79', level: 4, topic: 'Nourriture', en: 'milk', fr: 'lait' },
+  { id: 'v80', level: 4, topic: 'Nourriture', en: 'sugar', fr: 'sucre' },
+  { id: 'v81', level: 4, topic: 'Nourriture', en: 'salt', fr: 'sel' },
+  { id: 'v82', level: 4, topic: 'Nourriture', en: 'coffee', fr: 'café (boisson)' },
+  { id: 'v83', level: 4, topic: 'Nourriture', en: 'wine', fr: 'vin' },
+  { id: 'v84', level: 4, topic: 'Nourriture', en: 'breakfast', fr: 'petit-déjeuner' },
 
   // Niveau 5 — Vie quotidienne
   { id: 'v24', level: 5, topic: 'Vie quotidienne', en: 'car', fr: 'voiture' },
@@ -38,6 +74,15 @@ export const VOCAB = [
   { id: 'v26', level: 5, topic: 'Vie quotidienne', en: 'mobile phone', fr: 'téléphone portable' },
   { id: 'v27', level: 5, topic: 'Vie quotidienne', en: 'juice', fr: 'jus' },
   { id: 'v28', level: 5, topic: 'Vie quotidienne', en: 'potato', fr: 'pomme de terre' },
+  { id: 'v85', level: 5, topic: 'Vie quotidienne', en: 'house', fr: 'maison' },
+  { id: 'v86', level: 5, topic: 'Vie quotidienne', en: 'bedroom', fr: 'chambre' },
+  { id: 'v87', level: 5, topic: 'Vie quotidienne', en: 'kitchen', fr: 'cuisine (pièce)' },
+  { id: 'v88', level: 5, topic: 'Vie quotidienne', en: 'bathroom', fr: 'salle de bain' },
+  { id: 'v89', level: 5, topic: 'Vie quotidienne', en: 'window', fr: 'fenêtre' },
+  { id: 'v90', level: 5, topic: 'Vie quotidienne', en: 'door', fr: 'porte' },
+  { id: 'v91', level: 5, topic: 'Vie quotidienne', en: 'key', fr: 'clé' },
+  { id: 'v92', level: 5, topic: 'Vie quotidienne', en: 'money', fr: 'argent' },
+  { id: 'v93', level: 5, topic: 'Vie quotidienne', en: 'city', fr: 'ville' },
 
   // Niveau 6 — Travail
   { id: 'v29', level: 6, topic: 'Travail', en: 'work', fr: 'travail' },
@@ -45,6 +90,15 @@ export const VOCAB = [
   { id: 'v31', level: 6, topic: 'Travail', en: 'meeting', fr: 'réunion' },
   { id: 'v32', level: 6, topic: 'Travail', en: 'boss', fr: 'chef / patron' },
   { id: 'v33', level: 6, topic: 'Travail', en: 'employee', fr: 'employé' },
+  { id: 'v94', level: 6, topic: 'Travail', en: 'school', fr: 'école' },
+  { id: 'v95', level: 6, topic: 'Travail', en: 'university', fr: 'université' },
+  { id: 'v96', level: 6, topic: 'Travail', en: 'teacher', fr: 'professeur' },
+  { id: 'v97', level: 6, topic: 'Travail', en: 'student', fr: 'étudiant' },
+  { id: 'v98', level: 6, topic: 'Travail', en: 'exam', fr: 'examen' },
+  { id: 'v99', level: 6, topic: 'Travail', en: 'homework', fr: 'devoir' },
+  { id: 'v100', level: 6, topic: 'Travail', en: 'schedule', fr: 'horaire' },
+  { id: 'v101', level: 6, topic: 'Travail', en: 'salary', fr: 'salaire' },
+  { id: 'v102', level: 6, topic: 'Travail', en: 'email', fr: 'email' },
 
   // Niveau 7 — Voyage
   { id: 'v34', level: 7, topic: 'Voyage', en: 'passport', fr: 'passeport' },
@@ -52,6 +106,15 @@ export const VOCAB = [
   { id: 'v36', level: 7, topic: 'Voyage', en: 'flight', fr: 'vol (avion)' },
   { id: 'v37', level: 7, topic: 'Voyage', en: 'airport', fr: 'aéroport' },
   { id: 'v38', level: 7, topic: 'Voyage', en: 'ticket', fr: 'billet' },
+  { id: 'v103', level: 7, topic: 'Voyage', en: 'train', fr: 'train' },
+  { id: 'v104', level: 7, topic: 'Voyage', en: 'bus', fr: 'bus' },
+  { id: 'v105', level: 7, topic: 'Voyage', en: 'station', fr: 'gare' },
+  { id: 'v106', level: 7, topic: 'Voyage', en: 'reservation', fr: 'réservation' },
+  { id: 'v107', level: 7, topic: 'Voyage', en: 'hotel', fr: 'hôtel' },
+  { id: 'v108', level: 7, topic: 'Voyage', en: 'map', fr: 'carte (plan)' },
+  { id: 'v109', level: 7, topic: 'Voyage', en: 'foreigner', fr: 'étranger' },
+  { id: 'v110', level: 7, topic: 'Voyage', en: 'tourist', fr: 'touriste' },
+  { id: 'v111', level: 7, topic: 'Voyage', en: 'delay', fr: 'retard' },
 
   // Niveau 8 — Connecteurs
   { id: 'v39', level: 8, topic: 'Connecteurs', en: 'although', fr: 'bien que / même si' },
@@ -59,6 +122,15 @@ export const VOCAB = [
   { id: 'v41', level: 8, topic: 'Connecteurs', en: 'despite', fr: 'malgré' },
   { id: 'v42', level: 8, topic: 'Connecteurs', en: 'therefore', fr: 'par conséquent' },
   { id: 'v43', level: 8, topic: 'Connecteurs', en: 'in fact', fr: 'en fait' },
+  { id: 'v112', level: 8, topic: 'Connecteurs', en: 'moreover', fr: 'de plus' },
+  { id: 'v113', level: 8, topic: 'Connecteurs', en: 'while', fr: 'pendant que' },
+  { id: 'v114', level: 8, topic: 'Connecteurs', en: 'that’s why', fr: 'c’est pourquoi' },
+  { id: 'v115', level: 8, topic: 'Connecteurs', en: 'on the other hand', fr: 'en revanche' },
+  { id: 'v116', level: 8, topic: 'Connecteurs', en: 'unless', fr: 'à moins que' },
+  { id: 'v117', level: 8, topic: 'Connecteurs', en: 'as soon as', fr: 'dès que' },
+  { id: 'v118', level: 8, topic: 'Connecteurs', en: 'given that', fr: 'étant donné que' },
+  { id: 'v119', level: 8, topic: 'Connecteurs', en: 'nevertheless', fr: 'néanmoins' },
+  { id: 'v120', level: 8, topic: 'Connecteurs', en: 'as soon as possible', fr: 'le plus tôt possible' },
 
   // Niveau 9 — Expressions idiomatiques
   { id: 'v44', level: 9, topic: 'Expressions', en: 'you’re welcome', fr: 'de rien / il n’y a pas de quoi' },
@@ -66,6 +138,15 @@ export const VOCAB = [
   { id: 'v46', level: 9, topic: 'Expressions', en: 'to put one’s foot in it', fr: 'faire une gaffe' },
   { id: 'v47', level: 9, topic: 'Expressions', en: 'to be fed up', fr: 'en avoir marre' },
   { id: 'v48', level: 9, topic: 'Expressions', en: 'to be in a bad mood', fr: 'être de mauvaise humeur' },
+  { id: 'v121', level: 9, topic: 'Expressions', en: 'to be annoying', fr: 'casser les pieds (embêter)' },
+  { id: 'v122', level: 9, topic: 'Expressions', en: 'to cost an arm and a leg', fr: 'coûter les yeux de la tête' },
+  { id: 'v123', level: 9, topic: 'Expressions', en: 'to be a piece of cake', fr: 'être du gâteau (facile)' },
+  { id: 'v124', level: 9, topic: 'Expressions', en: 'to pull someone’s leg', fr: 'se moquer de quelqu’un' },
+  { id: 'v125', level: 9, topic: 'Expressions', en: 'to have your head in the clouds', fr: 'être dans la lune' },
+  { id: 'v126', level: 9, topic: 'Expressions', en: 'to not mince your words', fr: 'ne pas mâcher ses mots' },
+  { id: 'v127', level: 9, topic: 'Expressions', en: 'to get your act together', fr: 'se motiver' },
+  { id: 'v128', level: 9, topic: 'Expressions', en: 'to hit the nail on the head', fr: 'mettre dans le mille' },
+  { id: 'v129', level: 9, topic: 'Expressions', en: 'to rain cats and dogs', fr: 'pleuvoir des cordes' },
 ]
 
 export function wordFor(card) {
