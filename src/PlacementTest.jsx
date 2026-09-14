@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { PLACEMENT_QUESTIONS, scorePlacementTest } from './content/placementTest'
+import { scorePlacementTest } from './content/level'
 
 // Mélange les options une seule fois par question (sinon la bonne réponse est toujours
 // en premier, ce qui rend le test trivial à deviner).
-function shuffleQuestions() {
-  return PLACEMENT_QUESTIONS.map((q) => {
+function shuffleQuestions(sourceQuestions) {
+  return sourceQuestions.map((q) => {
     const order = q.options.map((_, i) => i)
     for (let i = order.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -14,8 +14,8 @@ function shuffleQuestions() {
   })
 }
 
-export default function PlacementTest({ onFinish }) {
-  const [questions] = useState(shuffleQuestions)
+export default function PlacementTest({ sourceQuestions, onFinish }) {
+  const [questions] = useState(() => shuffleQuestions(sourceQuestions))
   const [index, setIndex] = useState(0)
   const [answers, setAnswers] = useState([])
   const question = questions[index]

@@ -1,5 +1,5 @@
-// Test de niveau à l'inscription : 15 questions, difficulté croissante (poids 1 à 9,
-// aligné sur les 9 sous-niveaux du contenu — voir vocab.js). Commun aux deux variantes
+// Test de niveau espagnol à l'inscription : 15 questions, difficulté croissante (poids 1 à 9,
+// aligné sur les 9 sous-niveaux du contenu — voir vocabEs.js). Commun aux deux variantes
 // (Espagne/Amérique Latine) : aucune question ici ne dépend d'un mot qui diffère entre les deux.
 export const PLACEMENT_QUESTIONS = [
   { id: 'p1', level: 1, prompt: '« Hola » veut dire :', options: ['Bonjour / Salut', 'Au revoir', 'Merci', 'Oui'], correct: 0 },
@@ -18,20 +18,3 @@ export const PLACEMENT_QUESTIONS = [
   { id: 'p14', level: 8, prompt: 'Traduire : « Malgré la pluie, nous sommes sortis. »', options: ['A pesar de la lluvia, salimos.', 'A pesar de la lluvia, salgamos.', 'Sin embargo la lluvia, salimos.', 'Por lo tanto la lluvia, salimos.'], correct: 0 },
   { id: 'p15', level: 9, prompt: 'Que signifie l’expression « meter la pata » ?', options: ['Faire une gaffe', 'Mettre le pied', 'Partir en courant', 'Se fâcher'], correct: 0 },
 ]
-
-// answers: tableau d'index choisis. `questions` (optionnel) permet de passer une version
-// mélangée (voir PlacementTest.jsx) — doit garder les mêmes champs `level`/`correct` recalculés.
-export function scorePlacementTest(answers, questions = PLACEMENT_QUESTIONS) {
-  const totalWeight = questions.reduce((sum, q) => sum + q.level, 0)
-  const score = questions.reduce((sum, q, i) => {
-    return sum + (answers[i] === q.correct ? q.level : 0)
-  }, 0)
-  const level = Math.round((score / totalWeight) * 9)
-  return Math.min(9, Math.max(1, level || 1))
-}
-
-export function levelTier(level) {
-  if (level <= 3) return 'facile'
-  if (level <= 6) return 'intermediaire'
-  return 'difficile'
-}

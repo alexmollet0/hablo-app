@@ -111,6 +111,12 @@ button:disabled {
   margin: 0;
 }
 
+.coins {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 8px 0 4px;
+}
+
 .options,
 .variant-choice,
 .menu {
@@ -184,4 +190,44 @@ button:disabled {
 
 .answer-buttons .success {
   background: var(--success);
+}
+
+.slot-machine {
+  margin-top: 16px;
+}
+
+.reels {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.reel {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+.reel.spinning {
+  animation: reel-bounce 0.08s linear infinite;
+}
+
+@keyframes reel-bounce {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}
+
+.tier-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent-dark);
+  margin-bottom: 12px;
 }

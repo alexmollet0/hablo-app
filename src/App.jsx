@@ -4,7 +4,8 @@ import { supabase } from './supabaseClient'
 import Onboarding from './Onboarding'
 import Flashcards from './Flashcards'
 import QuizGame from './games/QuizGame'
-import { levelTier } from './content/placementTest'
+import SlotMachineGame from './games/SlotMachineGame'
+import { levelTier } from './content/level'
 import './App.css'
 
 export default function App() {
@@ -37,17 +38,52 @@ function Loaded() {
     return <Onboarding userId={userId} onDone={setProfile} />
   }
 
-  return <MainApp profile={profile} />
+  return <MainApp profile={profile} onProfileChange={setProfile} />
 }
 
-function MainApp({ profile }) {
-  const [view, setView] = useState('home') // 'home' | 'flashcards' | 'quiz'
+function MainApp({ profile, onProfileChange }) {
+  const [view, setView] = useState('home') // 'home' | 'flashcards' | 'quiz' | 'slots'
+
+  async function addCoins(amount) {
+    const coins = profile.coins + amount
+    onProfileChange({ ...profile, coins })
+    const { error } = await supabase.from('profiles').update({ coins }).eq('id', profile.id)
+    if (error) console.error(error)
+  }
+
+  const language = profile.target_language
 
   if (view === 'flashcards') {
-    return <Flashcards userId={profile.id} variant={profile.variant} level={profile.level} onExit={() => setView('home')} />
+    return (
+      <Flashcards
+        userId={profile.id}
+        language={language}
+        variant={profile.variant}
+        level={profile.level}
+        onExit={() => setView('home')}
+      />
+    )
   }
   if (view === 'quiz') {
-    return <QuizGame variant={profile.variant} level={profile.level} onExit={() => setView('home')} />
+    return (
+      <QuizGame
+        language={language}
+        variant={profile.variant}
+        level={profile.level}
+        onExit={() => setView('home')}
+      />
+    )
+  }
+  if (view === 'slots') {
+    return (
+      <SlotMachineGame
+        language={language}
+        variant={profile.variant}
+        level={profile.level}
+        onCoinsEarned={addCoins}
+        onExit={() => setView('home')}
+      />
+    )
   }
 
   return (
@@ -55,11 +91,14 @@ function MainApp({ profile }) {
       <div className="card center">
         <h1>¡Hola! 👋</h1>
         <p className="muted">
-          Niveau {profile.level}/9 · {levelTier(profile.level)} · {profile.variant === 'ES' ? 'Espagne 🇪🇸' : 'Amérique Latine 🌎'}
+          Niveau {profile.level}/9 · {levelTier(profile.level)} · {language === 'es' ? 'Español 🇪🇸' : 'English 🇬🇧'}
+          {profile.variant ? ` · ${profile.variant === 'ES' ? 'Espagne' : 'Amérique Latine'}` : ''}
         </p>
+        <p className="coins">🪙 {profile.coins}</p>
         <div className="menu">
           <button onClick={() => setView('flashcards')}>📇 Réviser mes flashcards</button>
           <button onClick={() => setView('quiz')}>🎮 Jouer au quiz</button>
+          <button onClick={() => setView('slots')}>🎰 Machine à sous</button>
         </div>
         <button className="link" onClick={() => supabase.auth.signOut()}>Se déconnecter</button>
       </div>

@@ -1,12 +1,18 @@
 -- À exécuter dans l'éditeur SQL du projet Supabase (Dashboard > SQL Editor).
--- Profil utilisateur : variante choisie, niveau, statut d'accès payant.
+-- Profil utilisateur : langue apprise, variante (espagnol seulement), niveau, pièces, accès payant.
 create table if not exists profiles (
   id uuid primary key references auth.users(id) on delete cascade,
-  variant text not null check (variant in ('ES', 'LatAm')),
+  target_language text not null default 'es' check (target_language in ('es', 'en')),
+  variant text check (variant in ('ES', 'LatAm')),
   level int not null default 1 check (level between 1 and 9),
   onboarded boolean not null default false,
   has_paid_access boolean not null default false,
-  created_at timestamptz not null default now()
+  coins int not null default 0,
+  created_at timestamptz not null default now(),
+  constraint profiles_variant_language_check check (
+    (target_language = 'es' and variant in ('ES', 'LatAm'))
+    or (target_language = 'en' and variant is null)
+  )
 );
 
 alter table profiles enable row level security;

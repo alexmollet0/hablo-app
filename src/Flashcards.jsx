@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from './supabaseClient'
-import { VOCAB, wordFor } from './content/vocab'
+import { LANGUAGES, getWord } from './content/language'
 import { initCardProgress, reviewCard, isDue } from './leitner'
 
-export default function Flashcards({ userId, variant, level, onExit }) {
-  const pool = useMemo(() => VOCAB.filter((c) => c.level <= level), [level])
+export default function Flashcards({ userId, language, variant, level, onExit }) {
+  const pool = useMemo(
+    () => LANGUAGES[language].vocab.filter((c) => c.level <= level),
+    [language, level]
+  )
   const [loading, setLoading] = useState(true)
   const [progressByCard, setProgressByCard] = useState({})
   const [queue, setQueue] = useState([])
@@ -68,7 +71,7 @@ export default function Flashcards({ userId, variant, level, onExit }) {
     <div className="screen-center">
       <div className="card center flashcard">
         <p className="muted">{card.topic} · {queue.length} restante{queue.length > 1 ? 's' : ''}</p>
-        <h1>{wordFor(card, variant)}</h1>
+        <h1>{getWord(card, language, variant)}</h1>
         {flipped && <p className="translation">{card.fr}</p>}
         {!flipped && (
           <button onClick={() => setFlipped(true)}>Retourner la carte</button>

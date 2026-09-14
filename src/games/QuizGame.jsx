@@ -1,11 +1,15 @@
 import { useMemo, useState } from 'react'
-import { VOCAB, wordFor } from '../content/vocab'
+import { LANGUAGES } from '../content/language'
+import { buildQuizRounds } from '../content/quizRounds'
 
 const QUESTIONS_PER_ROUND = 10
 
-export default function QuizGame({ variant, level, onExit }) {
-  const pool = useMemo(() => VOCAB.filter((c) => c.level <= level), [level])
-  const [rounds] = useState(() => buildRounds(pool, variant))
+export default function QuizGame({ language, variant, level, onExit }) {
+  const pool = useMemo(
+    () => LANGUAGES[language].vocab.filter((c) => c.level <= level),
+    [language, level]
+  )
+  const [rounds] = useState(() => buildQuizRounds(pool, language, variant, QUESTIONS_PER_ROUND))
   const [index, setIndex] = useState(0)
   const [score, setScore] = useState(0)
   const [selected, setSelected] = useState(null)
@@ -68,24 +72,4 @@ export default function QuizGame({ variant, level, onExit }) {
       </div>
     </div>
   )
-}
-
-function buildRounds(pool, variant) {
-  const shuffled = shuffle(pool).slice(0, Math.min(QUESTIONS_PER_ROUND, pool.length))
-  return shuffled.map((card) => {
-    const correct = wordFor(card, variant)
-    const distractors = shuffle(pool.filter((c) => c.id !== card.id))
-      .slice(0, 3)
-      .map((c) => wordFor(c, variant))
-    return { fr: card.fr, correct, options: shuffle([correct, ...distractors]) }
-  })
-}
-
-function shuffle(arr) {
-  const copy = [...arr]
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]]
-  }
-  return copy
 }

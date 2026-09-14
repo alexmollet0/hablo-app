@@ -69,24 +69,8 @@ export const VOCAB = [
   { id: 'v48', level: 9, topic: 'Expressions', es: 'tener mala leche', fr: 'être de mauvaise humeur' },
 ]
 
-export const TIERS = [
-  { key: 'facile', label: 'Facile', levels: [1, 2, 3] },
-  { key: 'intermediaire', label: 'Intermédiaire', levels: [4, 5, 6] },
-  { key: 'difficile', label: 'Difficile', levels: [7, 8, 9] },
-]
-
 // Retourne le mot espagnol adapté à la variante choisie par l'utilisateur ('ES' ou 'LatAm').
 export function wordFor(card, variant) {
   if (card.variant) return card.variant[variant] || card.variant.ES
   return card.es
-}
-
-export function vocabForLevel(level) {
-  return VOCAB.filter((c) => c.level === level)
-}
-
-export function vocabForTier(tierKey) {
-  const tier = TIERS.find((t) => t.key === tierKey)
-  if (!tier) return []
-  return VOCAB.filter((c) => tier.levels.includes(c.level))
 }
